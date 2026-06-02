@@ -7,7 +7,7 @@ Computational approaches are organized under the parent field simulation method,
 **CURIE:** [`NCIT:C48936`](NCIT:C48936)
 
 <iframe
-    src="/CoreMeta4Cat/assets/metadata_simulation_hierarchy.html"
+    src="../assets/metadata_simulation_hierarchy.html"
     width="100%"
     height= "470vh"
     style="border: 2px solid #5C88DA; background-color: #F0F8FF;
@@ -78,7 +78,7 @@ Simulation. Concrete subclasses carry the property-specific output
 values and the computational settings used to produce them.
 Linked from Simulation via the calculated_property slot.
 
-**CURIE:** [`coremeta4cat:CalculatedProperty`](https://w3id.org/nfdi4cat/coremeta4cat/CalculatedProperty)
+**CURIE:** [`IAO:0000109`](http://purl.obolibrary.org/obo/IAO_0000109)
 
 **Schema Reference:** [CalculatedProperty](./elements/classes/CalculatedProperty.md)
 
@@ -226,7 +226,7 @@ piezoelectric tensor. Relevant for piezocatalysis applications.
 <details markdown="1">
 <summary><strong>piezoelectric tensor</strong> (Optional, Multivalued)</summary>
 
-**Description:** Components of the piezoelectric tensor e_ij (C/m²) or d_ij (pC/N),
+**Description:** Components of the piezoelectric tensor e_ij (C/m2) or d_ij (pC/N),
 describing the coupling between stress and electric polarization.
 
 **Data Type:** string
@@ -626,7 +626,7 @@ Use empirical formula or SMILES for molecular systems.
 <summary><strong>crystal structure</strong> (Optional, Multivalued)</summary>
 
 **Description:** Crystal structure of the simulated material, including space group and
-lattice parameters (e.g. "Fm-3m, a=3.92 Å for Pt").
+lattice parameters (e.g. "Fm-3m, a=3.92 A for Pt").
 
 **Data Type:** string
 
@@ -667,7 +667,7 @@ lattice parameters (e.g. "Fm-3m, a=3.92 Å for Pt").
 <summary><strong>convergence criteria</strong> (Optional, Multivalued)</summary>
 
 **Description:** Convergence thresholds applied during self-consistent field (SCF) and/or
-geometry optimisation (e.g. energy < 1e-5 eV, forces < 0.02 eV/Å).
+geometry optimisation (e.g. energy < 1e-5 eV, forces < 0.02 eV/A).
 
 **Data Type:** string
 
@@ -687,7 +687,7 @@ geometry optimisation (e.g. energy < 1e-5 eV, forces < 0.02 eV/Å).
 <summary><strong>k point mesh</strong> (Optional, Multivalued)</summary>
 
 **Description:** Monkhorst-Pack k-point mesh used for Brillouin zone sampling
-(e.g. "4×4×1" for a surface slab, "8×8×8" for a bulk cell).
+(e.g. "4x4x1" for a surface slab, "8x8x8" for a bulk cell).
 
 **Data Type:** string
 
@@ -745,7 +745,7 @@ differences / supercell method, DFPT/linear response).
 <details markdown="1">
 <summary><strong>kq point mesh</strong> (Optional, Multivalued)</summary>
 
-**Description:** k/q-point mesh for phonon Brillouin zone sampling (e.g. "8×8×8").
+**Description:** k/q-point mesh for phonon Brillouin zone sampling (e.g. "8x8x8").
 Distinct from the electronic k-point mesh.
 
 **Data Type:** string
@@ -827,7 +827,7 @@ Use empirical formula or SMILES for molecular systems.
 <summary><strong>crystal structure</strong> (Optional, Multivalued)</summary>
 
 **Description:** Crystal structure of the simulated material, including space group and
-lattice parameters (e.g. "Fm-3m, a=3.92 Å for Pt").
+lattice parameters (e.g. "Fm-3m, a=3.92 A for Pt").
 
 **Data Type:** string
 
@@ -965,7 +965,7 @@ Use empirical formula or SMILES for molecular systems.
 <summary><strong>crystal structure</strong> (Optional, Multivalued)</summary>
 
 **Description:** Crystal structure of the simulated material, including space group and
-lattice parameters (e.g. "Fm-3m, a=3.92 Å for Pt").
+lattice parameters (e.g. "Fm-3m, a=3.92 A for Pt").
 
 **Data Type:** string
 
@@ -1006,7 +1006,7 @@ lattice parameters (e.g. "Fm-3m, a=3.92 Å for Pt").
 <summary><strong>convergence criteria</strong> (Optional, Multivalued)</summary>
 
 **Description:** Convergence thresholds applied during self-consistent field (SCF) and/or
-geometry optimisation (e.g. energy < 1e-5 eV, forces < 0.02 eV/Å).
+geometry optimisation (e.g. energy < 1e-5 eV, forces < 0.02 eV/A).
 
 **Data Type:** string
 
@@ -1026,7 +1026,7 @@ geometry optimisation (e.g. energy < 1e-5 eV, forces < 0.02 eV/Å).
 <summary><strong>k point mesh</strong> (Optional, Multivalued)</summary>
 
 **Description:** Monkhorst-Pack k-point mesh used for Brillouin zone sampling
-(e.g. "4×4×1" for a surface slab, "8×8×8" for a bulk cell).
+(e.g. "4x4x1" for a surface slab, "8x8x8" for a bulk cell).
 
 **Data Type:** string
 
@@ -1064,7 +1064,7 @@ stability screening.
 <details markdown="1">
 <summary><strong>ph range</strong> (Optional, Multivalued)</summary>
 
-**Description:** pH range covered in the Pourbaix stability diagram (e.g. "0–14").
+**Description:** pH range covered in the Pourbaix stability diagram (e.g. "0-14").
 
 **Data Type:** string
 
@@ -1142,22 +1142,18 @@ stability screening.
 </p></details>
 
 <details markdown="1">
-<summary><strong>temperature</strong> (Optional, Multivalued)</summary>
+<summary><strong>has temperature</strong> (Optional)</summary>
 
-**Description:** Temperature during a process or measurement.
+**Description:** No description available
 
-**Data Type:** float
+**Data Type:** string
 
-**Cardinality:**  Optional, Multivalued
+**Cardinality:**  Optional
 
-**CURIE:** [`AFR:0001584`](http://purl.allotrope.org/ontologies/result#AFR_0001584)
-
-**Schema Reference:** [temperature](./elements/slots/temperature.md)
-
-**Unit:** Cel
+**Schema Reference:** [has_temperature](./elements/slots/has_temperature.md)
 
 <p>
-  <a href=https://github.com/nfdi4cat/CoreMeta4Cat/issues/new?template=term_improvement.yaml&title=Term%20Feedback:%20temperature target="_blank" class="md-button md-button--primary">
+  <a href=https://github.com/nfdi4cat/CoreMeta4Cat/issues/new?template=term_improvement.yaml&title=Term%20Feedback:%20has_temperature target="_blank" class="md-button md-button--primary">
     💡 Submit Term Feedback
   </a>
 </p></details>
@@ -1186,7 +1182,7 @@ Use empirical formula or SMILES for molecular systems.
 <summary><strong>crystal structure</strong> (Optional, Multivalued)</summary>
 
 **Description:** Crystal structure of the simulated material, including space group and
-lattice parameters (e.g. "Fm-3m, a=3.92 Å for Pt").
+lattice parameters (e.g. "Fm-3m, a=3.92 A for Pt").
 
 **Data Type:** string
 
@@ -1287,7 +1283,7 @@ Miller indices (e.g. "Sigma5 (310)[001]").
 <summary><strong>simulation cell size</strong> (Optional, Multivalued)</summary>
 
 **Description:** Dimensions of the simulation cell used to model the grain boundary
-(e.g. "10×10×30 nm").
+(e.g. "10x10x30 nm").
 
 **Data Type:** string
 
@@ -1386,7 +1382,7 @@ Use empirical formula or SMILES for molecular systems.
 <summary><strong>crystal structure</strong> (Optional, Multivalued)</summary>
 
 **Description:** Crystal structure of the simulated material, including space group and
-lattice parameters (e.g. "Fm-3m, a=3.92 Å for Pt").
+lattice parameters (e.g. "Fm-3m, a=3.92 A for Pt").
 
 **Data Type:** string
 
@@ -1526,7 +1522,7 @@ Use empirical formula or SMILES for molecular systems.
 <summary><strong>crystal structure</strong> (Optional, Multivalued)</summary>
 
 **Description:** Crystal structure of the simulated material, including space group and
-lattice parameters (e.g. "Fm-3m, a=3.92 Å for Pt").
+lattice parameters (e.g. "Fm-3m, a=3.92 A for Pt").
 
 **Data Type:** string
 
@@ -1567,7 +1563,7 @@ lattice parameters (e.g. "Fm-3m, a=3.92 Å for Pt").
 <summary><strong>convergence criteria</strong> (Optional, Multivalued)</summary>
 
 **Description:** Convergence thresholds applied during self-consistent field (SCF) and/or
-geometry optimisation (e.g. energy < 1e-5 eV, forces < 0.02 eV/Å).
+geometry optimisation (e.g. energy < 1e-5 eV, forces < 0.02 eV/A).
 
 **Data Type:** string
 
@@ -1587,7 +1583,7 @@ geometry optimisation (e.g. energy < 1e-5 eV, forces < 0.02 eV/Å).
 <summary><strong>k point mesh</strong> (Optional, Multivalued)</summary>
 
 **Description:** Monkhorst-Pack k-point mesh used for Brillouin zone sampling
-(e.g. "4×4×1" for a surface slab, "8×8×8" for a bulk cell).
+(e.g. "4x4x1" for a surface slab, "8x8x8" for a bulk cell).
 
 **Data Type:** string
 
@@ -1768,7 +1764,7 @@ Use empirical formula or SMILES for molecular systems.
 <summary><strong>crystal structure</strong> (Optional, Multivalued)</summary>
 
 **Description:** Crystal structure of the simulated material, including space group and
-lattice parameters (e.g. "Fm-3m, a=3.92 Å for Pt").
+lattice parameters (e.g. "Fm-3m, a=3.92 A for Pt").
 
 **Data Type:** string
 
@@ -1971,7 +1967,7 @@ Use empirical formula or SMILES for molecular systems.
 <summary><strong>crystal structure</strong> (Optional, Multivalued)</summary>
 
 **Description:** Crystal structure of the simulated material, including space group and
-lattice parameters (e.g. "Fm-3m, a=3.92 Å for Pt").
+lattice parameters (e.g. "Fm-3m, a=3.92 A for Pt").
 
 **Data Type:** string
 
@@ -2012,7 +2008,7 @@ lattice parameters (e.g. "Fm-3m, a=3.92 Å for Pt").
 <summary><strong>convergence criteria</strong> (Optional, Multivalued)</summary>
 
 **Description:** Convergence thresholds applied during self-consistent field (SCF) and/or
-geometry optimisation (e.g. energy < 1e-5 eV, forces < 0.02 eV/Å).
+geometry optimisation (e.g. energy < 1e-5 eV, forces < 0.02 eV/A).
 
 **Data Type:** string
 
@@ -2032,7 +2028,7 @@ geometry optimisation (e.g. energy < 1e-5 eV, forces < 0.02 eV/Å).
 <summary><strong>k point mesh</strong> (Optional, Multivalued)</summary>
 
 **Description:** Monkhorst-Pack k-point mesh used for Brillouin zone sampling
-(e.g. "4×4×1" for a surface slab, "8×8×8" for a bulk cell).
+(e.g. "4x4x1" for a surface slab, "8x8x8" for a bulk cell).
 
 **Data Type:** string
 
@@ -2152,7 +2148,7 @@ HSE06). The choice of functional directly affects accuracy.
 <summary><strong>convergence criteria</strong> (Optional, Multivalued)</summary>
 
 **Description:** Convergence thresholds applied during self-consistent field (SCF) and/or
-geometry optimisation (e.g. energy < 1e-5 eV, forces < 0.02 eV/Å).
+geometry optimisation (e.g. energy < 1e-5 eV, forces < 0.02 eV/A).
 
 **Data Type:** string
 
@@ -2409,43 +2405,35 @@ stiff ODE solver, steady-state Newton method).
 </p></details>
 
 <details markdown="1">
-<summary><strong>temperature</strong> (Optional, Multivalued)</summary>
+<summary><strong>has temperature</strong> (Optional)</summary>
 
-**Description:** Temperature during a process or measurement.
+**Description:** No description available
 
-**Data Type:** float
+**Data Type:** string
 
-**Cardinality:**  Optional, Multivalued
+**Cardinality:**  Optional
 
-**CURIE:** [`AFR:0001584`](http://purl.allotrope.org/ontologies/result#AFR_0001584)
-
-**Schema Reference:** [temperature](./elements/slots/temperature.md)
-
-**Unit:** Cel
+**Schema Reference:** [has_temperature](./elements/slots/has_temperature.md)
 
 <p>
-  <a href=https://github.com/nfdi4cat/CoreMeta4Cat/issues/new?template=term_improvement.yaml&title=Term%20Feedback:%20temperature target="_blank" class="md-button md-button--primary">
+  <a href=https://github.com/nfdi4cat/CoreMeta4Cat/issues/new?template=term_improvement.yaml&title=Term%20Feedback:%20has_temperature target="_blank" class="md-button md-button--primary">
     💡 Submit Term Feedback
   </a>
 </p></details>
 
 <details markdown="1">
-<summary><strong>pressure</strong> (Optional, Multivalued)</summary>
+<summary><strong>has pressure</strong> (Optional)</summary>
 
-**Description:** Total pressure used in microkinetic or Monte Carlo simulation.
+**Description:** No description available
 
-**Data Type:** float
+**Data Type:** string
 
-**Cardinality:**  Optional, Multivalued
+**Cardinality:**  Optional
 
-**CURIE:** [`coremeta4cat:pressure`](https://w3id.org/nfdi4cat/coremeta4cat/pressure)
-
-**Schema Reference:** [pressure](./elements/slots/pressure.md)
-
-**Unit:** bar
+**Schema Reference:** [has_pressure](./elements/slots/has_pressure.md)
 
 <p>
-  <a href=https://github.com/nfdi4cat/CoreMeta4Cat/issues/new?template=term_improvement.yaml&title=Term%20Feedback:%20pressure target="_blank" class="md-button md-button--primary">
+  <a href=https://github.com/nfdi4cat/CoreMeta4Cat/issues/new?template=term_improvement.yaml&title=Term%20Feedback:%20has_pressure target="_blank" class="md-button md-button--primary">
     💡 Submit Term Feedback
   </a>
 </p></details>
@@ -2549,22 +2537,18 @@ and lattice-based kinetics.
 </p></details>
 
 <details markdown="1">
-<summary><strong>temperature</strong> (Optional, Multivalued)</summary>
+<summary><strong>has temperature</strong> (Optional)</summary>
 
-**Description:** Temperature during a process or measurement.
+**Description:** No description available
 
-**Data Type:** float
+**Data Type:** string
 
-**Cardinality:**  Optional, Multivalued
+**Cardinality:**  Optional
 
-**CURIE:** [`AFR:0001584`](http://purl.allotrope.org/ontologies/result#AFR_0001584)
-
-**Schema Reference:** [temperature](./elements/slots/temperature.md)
-
-**Unit:** Cel
+**Schema Reference:** [has_temperature](./elements/slots/has_temperature.md)
 
 <p>
-  <a href=https://github.com/nfdi4cat/CoreMeta4Cat/issues/new?template=term_improvement.yaml&title=Term%20Feedback:%20temperature target="_blank" class="md-button md-button--primary">
+  <a href=https://github.com/nfdi4cat/CoreMeta4Cat/issues/new?template=term_improvement.yaml&title=Term%20Feedback:%20has_temperature target="_blank" class="md-button md-button--primary">
     💡 Submit Term Feedback
   </a>
 </p></details>
@@ -2573,7 +2557,7 @@ and lattice-based kinetics.
 <summary><strong>lattice size type</strong> (Optional, Multivalued)</summary>
 
 **Description:** Lattice geometry and dimensions used in lattice-based MC (e.g.
-"100×100 square lattice", "hexagonal 50×50").
+"100x100 square lattice", "hexagonal 50x50").
 
 **Data Type:** string
 
