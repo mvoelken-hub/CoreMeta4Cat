@@ -1,5 +1,5 @@
 # Auto generated from coremeta4cat.yaml by pythongen.py version: 0.0.1
-# Generation date: 2026-04-30T11:32:37
+# Generation date: 2026-06-02T08:41:50
 # Schema: coremeta4cat-metadata
 #
 # id: https://w3id.org/nfdi4cat/coremeta4cat
@@ -9040,7 +9040,7 @@ slots.has_vessel_type = Slot(uri=SIO['000008'], name="has_vessel_type", curie=SI
 slots.has_operation_mode = Slot(uri=SIO['000008'], name="has_operation_mode", curie=SIO.curie('000008'),
                    model_uri=COREMETA4CAT.has_operation_mode, domain=None, range=Optional[Union[Union[dict, OperationMode], list[Union[dict, OperationMode]]]])
 
-slots.number_of_cycles = Slot(uri=COREMETA4CAT.number_of_cycles, name="number_of_cycles", curie=COREMETA4CAT.curie('number_of_cycles'),
+slots.number_of_cycles = Slot(uri=VOC4CAT['0008123'], name="number_of_cycles", curie=VOC4CAT.curie('0008123'),
                    model_uri=COREMETA4CAT.number_of_cycles, domain=None, range=Optional[Union[int, list[int]]])
 
 slots.carrier_gas = Slot(uri=COREMETA4CAT.carrier_gas, name="carrier_gas", curie=COREMETA4CAT.curie('carrier_gas'),
@@ -9097,13 +9097,13 @@ slots.catalyst_support = Slot(uri=VOC4CAT['0008104'], name="catalyst_support", c
 slots.precursor_quantity = Slot(uri=COREMETA4CAT.precursor_quantity, name="precursor_quantity", curie=COREMETA4CAT.curie('precursor_quantity'),
                    model_uri=COREMETA4CAT.precursor_quantity, domain=None, range=Optional[Union[Union[dict, Mass], list[Union[dict, Mass]]]])
 
-slots.impregnation_type = Slot(uri=COREMETA4CAT.impregnation_type, name="impregnation_type", curie=COREMETA4CAT.curie('impregnation_type'),
+slots.impregnation_type = Slot(uri=VOC4CAT['0008119'], name="impregnation_type", curie=VOC4CAT.curie('0008119'),
                    model_uri=COREMETA4CAT.impregnation_type, domain=None, range=Optional[Union[Union[str, "ImpregnationTypeEnum"], list[Union[str, "ImpregnationTypeEnum"]]]])
 
-slots.impregnation_duration = Slot(uri=COREMETA4CAT.impregnation_duration, name="impregnation_duration", curie=COREMETA4CAT.curie('impregnation_duration'),
+slots.impregnation_duration = Slot(uri=VOC4CAT['0008120'], name="impregnation_duration", curie=VOC4CAT.curie('0008120'),
                    model_uri=COREMETA4CAT.impregnation_duration, domain=None, range=Optional[Union[Union[dict, Duration], list[Union[dict, Duration]]]])
 
-slots.impregnation_temperature = Slot(uri=COREMETA4CAT.impregnation_temperature, name="impregnation_temperature", curie=COREMETA4CAT.curie('impregnation_temperature'),
+slots.impregnation_temperature = Slot(uri=VOC4CAT['0008121'], name="impregnation_temperature", curie=VOC4CAT.curie('0008121'),
                    model_uri=COREMETA4CAT.impregnation_temperature, domain=None, range=Optional[Union[Union[dict, Temperature], list[Union[dict, Temperature]]]])
 
 slots.precipitating_agent = Slot(uri=COREMETA4CAT.precipitating_agent, name="precipitating_agent", curie=COREMETA4CAT.curie('precipitating_agent'),
@@ -9112,25 +9112,25 @@ slots.precipitating_agent = Slot(uri=COREMETA4CAT.precipitating_agent, name="pre
 slots.has_mixing_speed = Slot(uri=SIO['000008'], name="has_mixing_speed", curie=SIO.curie('000008'),
                    model_uri=COREMETA4CAT.has_mixing_speed, domain=None, range=Optional[Union[Union[dict, AngularVelocity], list[Union[dict, AngularVelocity]]]])
 
-slots.has_mixing_duration = Slot(uri=SIO['000008'], name="has_mixing_duration", curie=SIO.curie('000008'),
+slots.has_mixing_duration = Slot(uri=VOC4CAT['0008126'], name="has_mixing_duration", curie=VOC4CAT.curie('0008126'),
                    model_uri=COREMETA4CAT.has_mixing_duration, domain=None, range=Optional[Union[dict, Duration]])
 
-slots.has_mixing_temperature = Slot(uri=SIO['000008'], name="has_mixing_temperature", curie=SIO.curie('000008'),
+slots.has_mixing_temperature = Slot(uri=VOC4CAT['0008127'], name="has_mixing_temperature", curie=VOC4CAT.curie('0008127'),
                    model_uri=COREMETA4CAT.has_mixing_temperature, domain=None, range=Optional[Union[Union[dict, Temperature], list[Union[dict, Temperature]]]])
 
-slots.has_aging_temperature = Slot(uri=SIO['000008'], name="has_aging_temperature", curie=SIO.curie('000008'),
+slots.has_aging_temperature = Slot(uri=VOC4CAT['0008131'], name="has_aging_temperature", curie=VOC4CAT.curie('0008131'),
                    model_uri=COREMETA4CAT.has_aging_temperature, domain=None, range=Optional[Union[Union[dict, Temperature], list[Union[dict, Temperature]]]])
 
 slots.has_aging_duration = Slot(uri=SIO['000008'], name="has_aging_duration", curie=SIO.curie('000008'),
                    model_uri=COREMETA4CAT.has_aging_duration, domain=None, range=Optional[Union[dict, Duration]])
 
-slots.order_of_addition = Slot(uri=COREMETA4CAT.order_of_addition, name="order_of_addition", curie=COREMETA4CAT.curie('order_of_addition'),
+slots.order_of_addition = Slot(uri=VOC4CAT['0008128'], name="order_of_addition", curie=VOC4CAT.curie('0008128'),
                    model_uri=COREMETA4CAT.order_of_addition, domain=None, range=Optional[Union[str, list[str]]])
 
-slots.filtration = Slot(uri=COREMETA4CAT.filtration, name="filtration", curie=COREMETA4CAT.curie('filtration'),
+slots.filtration = Slot(uri=VOC4CAT['0008129'], name="filtration", curie=VOC4CAT.curie('0008129'),
                    model_uri=COREMETA4CAT.filtration, domain=None, range=Optional[Union[str, list[str]]])
 
-slots.purification = Slot(uri=COREMETA4CAT.purification, name="purification", curie=COREMETA4CAT.curie('purification'),
+slots.purification = Slot(uri=VOC4CAT['0008130'], name="purification", curie=VOC4CAT.curie('0008130'),
                    model_uri=COREMETA4CAT.purification, domain=None, range=Optional[Union[str, list[str]]])
 
 slots.deposition_temperature = Slot(uri=COREMETA4CAT.deposition_temperature, name="deposition_temperature", curie=COREMETA4CAT.curie('deposition_temperature'),

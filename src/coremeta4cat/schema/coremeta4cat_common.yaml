@@ -443,7 +443,7 @@ slots:
   number_of_cycles:
     description: Number of repeated cycles in a process (e.g. ALD cycles, impregnation cycles).
     range: integer
-    slot_uri: coremeta4cat:number_of_cycles
+    slot_uri: VOC4CAT:0008123
     multivalued: true
 
   carrier_gas:

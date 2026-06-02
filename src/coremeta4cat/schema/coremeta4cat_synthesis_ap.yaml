@@ -476,20 +476,20 @@ slots:
   impregnation_type:
     description: Type of impregnation used (wet, dry, incipient wetness).
     range: ImpregnationTypeEnum
-    slot_uri: coremeta4cat:impregnation_type
+    slot_uri: VOC4CAT:0008119
     multivalued: true
 
   impregnation_duration:
     description: Duration of the impregnation step.
     range: Duration
-    slot_uri: coremeta4cat:impregnation_duration
+    slot_uri: VOC4CAT:0008120
     multivalued: true
     inlined_as_list: true
 
   impregnation_temperature:
     description: Temperature during the impregnation step.
     range: Temperature
-    slot_uri: coremeta4cat:impregnation_temperature
+    slot_uri: VOC4CAT:0008121
     multivalued: true
     inlined_as_list: true
 
@@ -513,19 +513,19 @@ slots:
 
   has_mixing_duration:
     is_a: has_duration
-    slot_uri: SIO:000008
+    slot_uri: VOC4CAT:0008126
     range: Duration
     description: Duration of the mixing step.
 
   has_mixing_temperature:
     is_a: has_temperature
-    slot_uri: SIO:000008
+    slot_uri: VOC4CAT:0008127
     range: Temperature
     description: Temperature maintained during mixing.
 
   has_aging_temperature:
     is_a: has_temperature
-    slot_uri: SIO:000008
+    slot_uri: VOC4CAT:0008131
     range: Temperature
     description: Temperature maintained during the aging step.
 
@@ -538,19 +538,19 @@ slots:
   order_of_addition:
     description: Order in which reagents or components are combined.
     range: string
-    slot_uri: coremeta4cat:order_of_addition
+    slot_uri: VOC4CAT:0008128
     multivalued: true
 
   filtration:
     description: Filtration method used to separate the precipitate (e.g. vacuum filtration).
     range: string
-    slot_uri: coremeta4cat:filtration
+    slot_uri: VOC4CAT:0008129
     multivalued: true
 
   purification:
     description: Purification method applied after synthesis (e.g. washing, dialysis).
     range: string
-    slot_uri: coremeta4cat:purification
+    slot_uri: VOC4CAT:0008130
     multivalued: true
 
   # ---- DepositionPrecipitation-specific slots ----
