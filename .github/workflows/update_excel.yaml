@@ -1,0 +1,69 @@
+# .github/workflows/update_excel.yaml
+#
+# Post-merge Excel update
+# ========================
+# Runs after every push to main (i.e. after a PR is merged).
+# Regenerates docs/assets/coremeta4cat_vocabulary.xlsx from the current
+# schema and commits it back if anything changed.
+#
+# This is the only place that writes the workbook — keeping write access
+# out of PR workflows entirely, which avoids fork permission issues.
+---
+name: Update Excel vocabulary
+
+on:  # yamllint disable-line rule:truthy
+  push:
+    branches: [main]
+    paths:
+      # Only regenerate when something that affects the workbook changes.
+      - "src/coremeta4cat/schema/**"
+      - "scripts/schema_to_excel.py"
+      - "scripts/generate_schema_docs.py"
+
+env:
+  FORCE_COLOR: "1"
+
+permissions:
+  contents: write   # needed to commit the regenerated workbook
+
+jobs:
+  update-excel:
+    runs-on: ubuntu-latest
+
+    steps:
+
+      - name: Check out repository
+        uses: actions/checkout@v6.0.3
+        with:
+          # Use a token with write access so the commit push works.
+          # GITHUB_TOKEN is sufficient for same-repo pushes.
+          token: ${{ secrets.GITHUB_TOKEN }}
+          fetch-depth: 0
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v8.2.0
+        with:
+          python-version: "3.12"
+          enable-cache: true
+          cache-dependency-glob: "uv.lock"
+
+      - name: Install project
+        run: uv sync --dev
+
+      - name: Install just
+        run: uv tool install rust-just
+
+      - name: Regenerate Excel vocabulary from schema
+        run: just schema-to-excel
+
+      - name: Commit updated workbook if changed
+        run: |
+          git config user.name  "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add docs/assets/coremeta4cat_vocabulary.xlsx
+          if git diff --cached --quiet; then
+            echo "Workbook unchanged — nothing to commit."
+          else
+            git commit -m "chore: regenerate vocabulary workbook from schema [skip ci]"
+            git push
+          fi
