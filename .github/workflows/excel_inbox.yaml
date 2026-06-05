@@ -1,0 +1,229 @@
+# .github/workflows/excel_inbox.yaml
+#
+# Excel Inbox — PR validation pipeline
+# =====================================
+# Triggered when a pull request adds or modifies a file inside the
+# inbox/ directory.  The expected contributor flow is:
+#
+#   1. Contributor downloads docs/assets/coremeta4cat_vocabulary.xlsx,
+#      edits the vocabulary (adds/changes rows), and opens a PR placing
+#      the updated file in:
+#
+#         inbox/coremeta4cat_vocabulary.xlsx
+#
+#   2. This workflow runs automatically and:
+#      a. Validates the workbook structure (sheets, columns).
+#      b. Runs the round-trip diff (excel-to-schema): checks that every
+#         top-level slot in the workbook exists in the schema with the
+#         correct M/R/O value.
+#      c. Posts a summary comment on the PR with the outcome.
+#      d. On success: moves the file to docs/assets/ and commits it back
+#         to the PR branch, OR deletes it and lets schema-to-excel
+#         regenerate it (see INBOX_PROMOTE_STRATEGY below).
+#      e. On failure: leaves the inbox file in place and marks the
+#         workflow as failed so the PR cannot be merged.
+#
+# INBOX_PROMOTE_STRATEGY
+# ──────────────────────
+# Two strategies are supported, controlled by the env var below:
+#
+#   "move"       — The validated inbox file is moved to docs/assets/ and
+#                  committed back.  Use this when contributors may have
+#                  added rows that the schema-to-excel script would not
+#                  regenerate (e.g. manually curated descriptions).
+#
+#   "regenerate" — The inbox file is deleted and schema-to-excel is run
+#                  to produce a fresh docs/assets/ workbook from the
+#                  schema.  Use this when the Excel is purely derived
+#                  output and should always mirror the schema exactly.
+#
+# Set the strategy in the env block below.
+---
+name: Excel inbox validation
+
+on:  # yamllint disable-line rule:truthy
+  pull_request:
+    paths:
+      - "inbox/**"
+
+env:
+  FORCE_COLOR: "1"
+  INBOX_PROMOTE_STRATEGY: "regenerate"   # "move" or "regenerate"
+  INBOX_FILE: "inbox/coremeta4cat_vocabulary.xlsx"
+  DOCS_FILE: "docs/assets/coremeta4cat_vocabulary.xlsx"
+
+permissions:
+  contents: write        # needed to push the commit back to the PR branch
+  pull-requests: write   # needed to post the summary comment
+
+jobs:
+  validate-inbox:
+    runs-on: ubuntu-latest
+    # Only run when the inbox file is actually present in the PR
+    steps:
+
+      - name: Check out PR branch
+        uses: actions/checkout@v6.0.3
+        with:
+          ref: ${{ github.head_ref }}
+          token: ${{ secrets.GITHUB_TOKEN }}
+          fetch-depth: 0
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v8.2.0
+        with:
+          python-version: "3.12"
+          enable-cache: true
+          cache-dependency-glob: "uv.lock"
+
+      - name: Install project
+        run: uv sync --dev
+
+      - name: Install just
+        run: uv tool install rust-just
+
+      - name: Check inbox file exists
+        id: inbox_check
+        run: |
+          if [ -f "${{ env.INBOX_FILE }}" ]; then
+            echo "present=true" >> "$GITHUB_OUTPUT"
+            echo "Inbox file found: ${{ env.INBOX_FILE }}"
+          else
+            echo "present=false" >> "$GITHUB_OUTPUT"
+            echo "No inbox file found — skipping validation."
+          fi
+
+      - name: Validate workbook structure
+        if: steps.inbox_check.outputs.present == 'true'
+        id: validate_structure
+        run: |
+          uv run python - <<'PYEOF'
+          import sys
+          import openpyxl
+
+          path = "${{ env.INBOX_FILE }}"
+          expected_sheets = {"Introduction", "Legend", "CoreMeta4Cat",
+                             "Synthesis", "Characterization", "Reaction", "Simulation"}
+          expected_headers = ["label", "type", "domain", "M / R / O",
+                              "range", "uri", "description"]
+          data_sheets = ["Synthesis", "Characterization", "Reaction", "Simulation"]
+
+          errors = []
+
+          try:
+              wb = openpyxl.load_workbook(path, read_only=True, data_only=True)
+          except Exception as e:
+              print(f"::error::Cannot open workbook: {e}")
+              sys.exit(1)
+
+          # Check sheet presence
+          missing = expected_sheets - set(wb.sheetnames)
+          if missing:
+              errors.append(f"Missing sheets: {', '.join(sorted(missing))}")
+
+          # Check headers on data sheets
+          for sheet_name in data_sheets:
+              if sheet_name not in wb.sheetnames:
+                  continue
+              ws = wb[sheet_name]
+              header = [cell.value for cell in next(ws.iter_rows(max_row=1))]
+              if header != expected_headers:
+                  errors.append(
+                      f"Sheet '{sheet_name}' header mismatch.\n"
+                      f"  Expected: {expected_headers}\n  Got: {header}"
+                  )
+
+          if errors:
+              for e in errors:
+                  print(f"::error::{e}")
+              sys.exit(1)
+
+          print("Workbook structure is valid.")
+          PYEOF
+
+      - name: Run round-trip diff (excel-to-schema)
+        if: steps.inbox_check.outputs.present == 'true'
+        id: roundtrip
+        run: |
+          # Run excel_to_schema against the inbox file and capture output.
+          # The script exits 0 even with diffs, so we parse its output.
+          OUTPUT=$(uv run python scripts/excel_to_schema.py "${{ env.INBOX_FILE }}" 2>&1)
+          echo "$OUTPUT"
+          echo "roundtrip_output<<EOF" >> "$GITHUB_ENV"
+          echo "$OUTPUT" >> "$GITHUB_ENV"
+          echo "EOF" >> "$GITHUB_ENV"
+
+          if echo "$OUTPUT" | grep -q "OK Schema and workbook are fully aligned"; then
+            echo "status=ok" >> "$GITHUB_OUTPUT"
+          else
+            echo "status=diff" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Post PR comment
+        if: steps.inbox_check.outputs.present == 'true'
+        uses: actions/github-script@v7
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const status = "${{ steps.roundtrip.outputs.status }}";
+            const output = process.env.roundtrip_output || "(no output)";
+            const icon   = status === "ok" ? "✅" : "❌";
+            const title  = status === "ok"
+              ? "Excel inbox — round-trip validation **passed**"
+              : "Excel inbox — round-trip validation **failed**";
+            const body = `## ${icon} ${title}\n\n<details><summary>Full diff output</summary>\n\n\`\`\`\n${output}\n\`\`\`\n</details>\n\n${
+              status === "ok"
+                ? "The workbook is aligned with the schema. The file will be promoted to `docs/assets/` automatically."
+                : "Differences were found between the inbox workbook and the schema. Please review the output above and either update the workbook or open a schema issue."
+            }`;
+
+            await github.rest.issues.createComment({
+              owner: context.repo.owner,
+              repo:  context.repo.repo,
+              issue_number: context.issue.number,
+              body,
+            });
+
+      - name: Fail if round-trip has differences
+        if: >
+          steps.inbox_check.outputs.present == 'true' &&
+          steps.roundtrip.outputs.status != 'ok'
+        run: |
+          echo "::error::Round-trip validation failed. See PR comment for details."
+          exit 1
+
+      # ── Promotion step: move or regenerate ───────────────────────────────
+
+      - name: Promote inbox file (strategy = move)
+        if: >
+          steps.inbox_check.outputs.present == 'true' &&
+          steps.roundtrip.outputs.status == 'ok' &&
+          env.INBOX_PROMOTE_STRATEGY == 'move'
+        run: |
+          mv "${{ env.INBOX_FILE }}" "${{ env.DOCS_FILE }}"
+          echo "Moved inbox file to docs/assets/."
+
+      - name: Promote inbox file (strategy = regenerate)
+        if: >
+          steps.inbox_check.outputs.present == 'true' &&
+          steps.roundtrip.outputs.status == 'ok' &&
+          env.INBOX_PROMOTE_STRATEGY == 'regenerate'
+        run: |
+          rm "${{ env.INBOX_FILE }}"
+          just schema-to-excel
+          echo "Removed inbox file; regenerated docs/assets/ from schema."
+
+      - name: Commit promotion back to PR branch
+        if: steps.inbox_check.outputs.present == 'true' && steps.roundtrip.outputs.status == 'ok'
+        run: |
+          git config user.name  "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add "${{ env.DOCS_FILE }}"
+          # Stage inbox deletion if still present (move strategy leaves nothing to stage)
+          git add "${{ env.INBOX_FILE }}" 2>/dev/null || true
+          if git diff --cached --quiet; then
+            echo "Nothing to commit."
+          else
+            git commit -m "chore: promote validated inbox Excel to docs/assets [skip ci]"
+            git push
+          fi

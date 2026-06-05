@@ -19,3 +19,9 @@ schema-to-excel:
 [group('model development')]
 excel-to-schema:
   uv run python scripts/excel_to_schema.py
+
+# Validate an Excel file in the inbox/ folder against the current schema.
+# Place your file as inbox/coremeta4cat_vocabulary.xlsx before running.
+[group('model development')]
+excel-inbox:
+  uv run python scripts/excel_to_schema.py inbox/coremeta4cat_vocabulary.xlsx

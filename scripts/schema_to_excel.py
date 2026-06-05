@@ -13,12 +13,13 @@ Sheet order:
   7. Simulation
 
 Columns (sheets 3-7):
-  label                      human-readable slot or class name
-  parent                     parent slot/class (empty for top-level entries)
-  mandatory, recommended, optional  M / R / O classification
-  range                      LinkML range type
-  slot_uri / class_uri       CURIE for the term
-  description                documentation string
+  label      human-readable slot or class name
+  type       "slot" or "class"
+  domain     the slot or class this entry belongs to (empty for top-level entries)
+  M / R / O  Mandatory / Recommended / Optional classification
+  range      LinkML range type
+  uri        ontology CURIE for the term
+  description  documentation string
 
 Output:
   docs/assets/coremeta4cat_vocabulary.xlsx  (overwrites the file in place)
@@ -70,14 +71,27 @@ FILL_R_LEGEND = PatternFill("solid", fgColor="2E75B6")
 FILL_O_LEGEND = PatternFill("solid", fgColor="70AD47")
 FONT_WHITE    = Font(color="FFFFFF", bold=True)
 
+FILL_CLASS    = PatternFill("solid", fgColor="D9D9D9")
+FONT_CLASS    = Font(bold=True, italic=True)
+
 HEADERS = [
     "label",
-    "parent",
-    "mandatory, recommended, optional",
+    "type",
+    "domain",
+    "M / R / O",
     "range",
-    "slot_uri / class_uri",
+    "uri",
     "description",
 ]
+
+
+# Maps sheet title (user-facing) -> LinkML class name in the schema
+CLASS_MAP = {
+    "Synthesis": "Synthesis",
+    "Characterization": "Characterization",
+    "Reaction": "CatalyticReaction",
+    "Simulation": "Simulation",
+}
 
 # ─────────────────────────────────────────────────────────────────────────────
 # Shared helpers
@@ -105,13 +119,19 @@ def _write_data_headers(ws) -> None:
     ws.freeze_panes = "A2"
 
 
-def _append_row(ws, row_data: list, mro: str) -> None:
+def _append_row(ws, row_data: list, row_type: str, mro: str) -> None:
     ws.append(row_data)
-    fill = {"M": FILL_M, "R": FILL_R, "O": FILL_O}.get(mro)
-    if fill:
+    if row_type == "class":
         for cell in ws[ws.max_row]:
-            cell.fill = fill
+            cell.fill = FILL_CLASS
+            cell.font = FONT_CLASS
             cell.alignment = Alignment(wrap_text=True, vertical="top")
+    else:
+        fill = {"M": FILL_M, "R": FILL_R, "O": FILL_O}.get(mro)
+        if fill:
+            for cell in ws[ws.max_row]:
+                cell.fill = fill
+                cell.alignment = Alignment(wrap_text=True, vertical="top")
 
 
 def _auto_width(ws) -> None:
@@ -180,10 +200,11 @@ def build_intro_sheet(wb: openpyxl.Workbook) -> None:
 
     _section(r, "How to read the data sheets"); r += 1
     _row(r, "label", "Human-readable name of the metadata field or class."); r += 1
-    _row(r, "parent", "The parent field this entry belongs to. Empty means it is a top-level field."); r += 1
+    _row(r, "type", "Whether this row is a 'slot' (a metadata field) or a 'class' (a structured sub-record type)."); r += 1
+    _row(r, "domain", "The slot or class this entry belongs to. Empty means it is a top-level entry of the data class."); r += 1
     _row(r, "M / R / O", "Whether the field is Mandatory (must be reported), Recommended (strongly encouraged), or Optional. See the Legend sheet for colour coding."); r += 1
-    _row(r, "range", "The expected value type — a primitive (string, float, integer) or a sub-class name that expands into its own set of fields."); r += 1
-    _row(r, "slot_uri / class_uri", "The CURIE (Compact URI) linking this field to a term in an established ontology (e.g. Voc4Cat, CHMO, OBI)."); r += 1
+    _row(r, "range", "The expected value type — a primitive (string, float, integer) or a class name that expands into its own set of fields."); r += 1
+    _row(r, "uri", "The CURIE (Compact URI) linking this field to a term in an established ontology (e.g. Voc4Cat, CHMO, OBI)."); r += 1
     _row(r, "description", "Documentation string from the schema explaining the purpose of the field."); r += 1
 
 
@@ -254,14 +275,16 @@ def build_legend_sheet(wb: openpyxl.Workbook) -> None:
     _section(r, "Column descriptions"); r += 1
     _col_row(r, "label",
              "Human-readable name of the metadata field or class, derived from the LinkML slot or class name."); r += 1
-    _col_row(r, "parent",
-             "The parent field this entry belongs to in the hierarchy. An empty parent means the field is at the top level of the data class."); r += 1
-    _col_row(r, "mandatory, recommended, optional",
+    _col_row(r, "type",
+             "'slot' — a metadata field carrying a value. 'class' — a structured sub-record type reachable via the slot above it. Class rows are shown in grey italics."); r += 1
+    _col_row(r, "domain",
+             "The slot or class this entry belongs to in the hierarchy. An empty domain means the entry is at the top level of the data class."); r += 1
+    _col_row(r, "M / R / O",
              "M = Mandatory, R = Recommended, O = Optional. Derived from the 'required' and 'recommended' attributes in the LinkML schema."); r += 1
     _col_row(r, "range",
              "The expected value type. Primitives (string, float, integer, boolean, uri) are leaf values. A class name means the field expands into a structured sub-record defined by the named class."); r += 1
-    _col_row(r, "slot_uri / class_uri",
-             "CURIE (Compact URI) linking this field to a term in an established ontology. Click the linked term in the schema documentation for the full URI."); r += 1
+    _col_row(r, "uri",
+             "CURIE (Compact URI) linking this field or class to a term in an established ontology. Click the linked term in the schema documentation for the full URI."); r += 1
     _col_row(r, "description",
              "Documentation string from the schema explaining the meaning and purpose of the field."); r += 1
     _blank(r); r += 1
@@ -300,15 +323,15 @@ def build_catcore_sheet(wb: openpyxl.Workbook, schema: dict) -> None:
         rng  = su_def.get("range", "")
         uri  = su_def.get("slot_uri", "") or (classes.get(rng, {}).get("class_uri", "") if rng else "")
         desc = su_def.get("description", "")
-        rows.append((snake_to_readable(su_name), "", mro, rng, uri, desc))
+        rows.append((snake_to_readable(su_name), "slot", "", mro, rng, uri, desc))
 
     seen: set = set()
     for row in rows:
-        key = (row[0], row[1])
+        key = (row[0], row[2])  # label + domain
         if key in seen:
             continue
         seen.add(key)
-        _append_row(ws, list(row), row[2])
+        _append_row(ws, list(row), row[1], row[3])
 
     _auto_width(ws)
 
@@ -339,21 +362,21 @@ def _collect_rows(
         uri  = slot_def.get("slot_uri", "")
         desc = slot_def.get("description", "")
         label = snake_to_readable(slot_name)
-        rows.append((label, parent_label, mro, range_type, uri, desc))
+        rows.append((label, "slot", parent_label, mro, range_type, uri, desc))
 
         if range_type and range_type in classes and not is_mixin(schema, range_type):
             class_def   = classes[range_type]
             class_label = snake_to_readable(range_type)
             class_uri   = class_def.get("class_uri", "")
             class_desc  = class_def.get("description", "")
-            rows.append((class_label, label, mro, "", class_uri, class_desc))
+            rows.append((class_label, "class", label, mro, "", class_uri, class_desc))
             _collect_rows(schema, range_type, class_label, context_class, seen, rows, depth + 1)
             for sub in get_subclasses(schema, range_type):
                 sub_def   = classes.get(sub, {})
                 sub_label = snake_to_readable(sub)
                 sub_uri   = sub_def.get("class_uri", "")
                 sub_desc  = sub_def.get("description", "")
-                rows.append((sub_label, class_label, mro, "", sub_uri, sub_desc))
+                rows.append((sub_label, "class", class_label, mro, "", sub_uri, sub_desc))
                 _collect_rows(schema, sub, sub_label, context_class, seen | {range_type}, rows, depth + 2)
 
     for su_name, synthetic in get_class_ranged_slot_usage(schema, class_name):
@@ -364,25 +387,27 @@ def _collect_rows(
         uri  = synthetic.get("slot_uri", "")
         desc = synthetic.get("description", "")
         su_label = snake_to_readable(su_name)
-        rows.append((su_label, parent_label, mro, rng, uri, desc))
+        rows.append((su_label, "slot", parent_label, mro, rng, uri, desc))
         if rng and rng in classes and not is_mixin(schema, rng):
             class_def   = classes[rng]
             class_label = snake_to_readable(rng)
             class_uri   = class_def.get("class_uri", "")
             class_desc  = class_def.get("description", "")
-            rows.append((class_label, su_label, mro, "", class_uri, class_desc))
+            rows.append((class_label, "class", su_label, mro, "", class_uri, class_desc))
             _collect_rows(schema, rng, class_label, class_name, seen, rows, depth + 1)
             for sub in get_subclasses(schema, rng):
                 sub_def   = classes.get(sub, {})
                 sub_label = snake_to_readable(sub)
                 sub_uri   = sub_def.get("class_uri", "")
                 sub_desc  = sub_def.get("description", "")
-                rows.append((sub_label, class_label, mro, "", sub_uri, sub_desc))
+                rows.append((sub_label, "class", class_label, mro, "", sub_uri, sub_desc))
                 _collect_rows(schema, sub, sub_label, class_name, seen | {rng}, rows, depth + 2)
 
 
-def build_sheet(wb: openpyxl.Workbook, schema: dict, class_name: str) -> None:
-    ws = wb.create_sheet(title=class_name)
+def build_sheet(wb: openpyxl.Workbook, schema: dict, sheet_title: str, class_name: str | None = None) -> None:
+    if class_name is None:
+        class_name = CLASS_MAP.get(sheet_title, sheet_title)
+    ws = wb.create_sheet(title=sheet_title)
     _write_data_headers(ws)
 
     rows: list = []
@@ -390,11 +415,11 @@ def build_sheet(wb: openpyxl.Workbook, schema: dict, class_name: str) -> None:
 
     seen_labels: set = set()
     for row in rows:
-        key = (row[0], row[1])
+        key = (row[0], row[2])  # label + domain
         if key in seen_labels:
             continue
         seen_labels.add(key)
-        _append_row(ws, list(row), row[2])
+        _append_row(ws, list(row), row[1], row[3])
 
     _auto_width(ws)
 
@@ -419,9 +444,9 @@ def main(schema_dir: str, output_path: str) -> None:
     print("  Building sheet: CoreMeta4Cat")
     build_catcore_sheet(wb, schema)
 
-    for cls in ["Synthesis", "Characterization", "Reaction", "Simulation"]:
-        print(f"  Building sheet: {cls}")
-        build_sheet(wb, schema, cls)
+    for sheet_title in ["Synthesis", "Characterization", "Reaction", "Simulation"]:
+        print(f"  Building sheet: {sheet_title}")
+        build_sheet(wb, schema, sheet_title)
 
     out = Path(output_path)
     out.parent.mkdir(parents=True, exist_ok=True)

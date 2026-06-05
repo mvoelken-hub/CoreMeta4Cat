@@ -51,5 +51,10 @@ jobs:
       - name: Install project
         run: uv sync --dev
 
+      - name: Regenerate Excel vocabulary from schema
+        # Keeps docs/assets/coremeta4cat_vocabulary.xlsx up to date
+        # before any documentation build step uses it.
+        run: just schema-to-excel
+
       - name: Run test suite
         run: just test

@@ -11,6 +11,12 @@ It produces a human-readable diff report showing:
   - Slots/classes present in the schema but not in the workbook
   - M/R/O mismatches between the workbook and the schema
 
+The workbook is expected to use the column layout produced by schema_to_excel.py:
+  label, type, domain, M / R / O, range, uri, description
+
+Workbooks using the legacy "parent" column (without "type") are still
+accepted — every row is treated as a slot in that case.
+
 Usage:
     just excel-to-schema
   or directly:
@@ -42,6 +48,14 @@ DEFAULT_WORKBOOK = _ROOT / "docs" / "assets" / "coremeta4cat_vocabulary.xlsx"
 SCHEMA_DIR = _ROOT / "src" / "coremeta4cat" / "schema"
 
 MAIN_CLASSES = ["Synthesis", "Characterization", "Reaction", "Simulation"]
+
+# Maps sheet title -> LinkML class name
+CLASS_MAP = {
+    'Synthesis': 'Synthesis',
+    'Characterization': 'Characterization',
+    'Reaction': 'CatalyticReaction',
+    'Simulation': 'Simulation',
+}
 
 # ─────────────────────────────────────────────────────────────────────────────
 # Helpers
@@ -81,10 +95,14 @@ def _schema_labels_for_class(schema: dict, class_name: str) -> dict[str, str]:
 
 def _excel_labels_for_sheet(df: pd.DataFrame, mro_col: str) -> dict[str, str]:
     """
-    Return {label: mro} for all top-level rows (no parent) in an Excel sheet.
+    Return {label: mro} for all top-level slot rows (no domain, type == slot) in an Excel sheet.
     """
     result: dict[str, str] = {}
-    top = df[df["parent"].isin(["", "na", float("nan")])]
+    # A top-level slot has an empty domain and type == "slot"
+    top = df[
+        df["domain"].isin(["", "na", float("nan")])
+        & (df["type"].str.strip().str.lower() == "slot")
+    ]
     for _, row in top.iterrows():
         label = str(row.get("label", "")).strip()
         mro = str(row.get(mro_col, "")).strip().upper()[:1]
@@ -111,7 +129,8 @@ def compare(workbook_path: Path) -> None:
         print(f"  {cls}")
         print(f"{'='*60}")
 
-        schema_labels = _schema_labels_for_class(schema, cls)
+        schema_class = CLASS_MAP.get(cls, cls)
+        schema_labels = _schema_labels_for_class(schema, schema_class)
 
         # Try to match sheet by class name (case-insensitive)
         sheet_match = next(
@@ -125,13 +144,24 @@ def compare(workbook_path: Path) -> None:
         df.columns = [str(c).strip().lower() for c in df.columns]
         # Detect the M/R/O column (flexible naming)
         mro_col = next(
-            (c for c in df.columns if "mandatory" in c or "mro" in c or c == "m/r/o"), None
+            (c for c in df.columns if "mandatory" in c or "mro" in c or c in ("m/r/o", "m / r / o")), None
         )
         if mro_col is None:
             print(f"  [!] Could not find M/R/O column in sheet '{sheet_match}' — skipping.\n")
             continue
 
-        df["parent"] = df["parent"].astype(str).str.strip().str.lower()
+        # Normalise domain column (new name) with fallback to legacy "parent"
+        if "domain" in df.columns:
+            df["domain"] = df["domain"].astype(str).str.strip().str.lower()
+        elif "parent" in df.columns:
+            df["domain"] = df["parent"].astype(str).str.strip().str.lower()
+        else:
+            print(f"  [!] Could not find 'domain' or 'parent' column in sheet '{sheet_match}' — skipping.\n")
+            continue
+
+        # Ensure a type column exists; workbooks without it treat every row as a slot
+        if "type" not in df.columns:
+            df["type"] = "slot"
         excel_labels = _excel_labels_for_sheet(df, mro_col)
 
         schema_set = set(schema_labels)
