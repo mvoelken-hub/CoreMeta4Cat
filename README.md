@@ -1,5 +1,6 @@
 [![Build and test](https://github.com/nfdi4cat/CoreMeta4Cat/actions/workflows/main.yaml/badge.svg)](https://github.com/nfdi4cat/CoreMeta4Cat/actions/workflows/main.yaml)
 [![Deploy docs](https://github.com/nfdi4cat/CoreMeta4Cat/actions/workflows/deploy-docs.yaml/badge.svg)](https://nfdi4cat.github.io/CoreMeta4Cat/)
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.20564228.svg)](https://doi.org/10.5281/zenodo.20564228)
 [![Copier Badge](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/copier-org/copier/master/img/badge/badge-grayscale-inverted-border-teal.json)](https://github.com/linkml/linkml-project-copier)
 
 # CoreMeta4Cat
