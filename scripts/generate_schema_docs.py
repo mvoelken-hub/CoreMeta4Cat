@@ -320,20 +320,28 @@ LEGEND = """\
 
 </details>"""
 
+# Maps schema class names to their simplified display names used in documentation.
+# Needed where the schema uses a fully qualified name to avoid clashes with
+# identically named classes in top-level profiles (e.g. chemdcat-ap).
+DISPLAY_NAMES: dict[str, str] = {
+    "CatalyticReaction": "Reaction",
+}
+
 # ── Per-class introductory text shown below the page title ────────────────────
 # Edit these strings to replace the placeholder "test description" sections.
+# Keys must match the schema class name (not the display name).
 CLASS_DESCRIPTIONS: dict = {
-    "Synthesis":        """The Synthesis data class captures metadata required to document catalyst preparation procedures in a structured and reproducible manner. It defines the minimum information necessary to describe synthesis routes and their relevant parameters.
+    "Synthesis":          """The Synthesis data class captures metadata required to document catalyst preparation procedures in a structured and reproducible manner. It defines the minimum information necessary to describe synthesis routes and their relevant parameters.
 
 Metadata are organized hierarchically based on the selected synthesis method. Method-specific child fields are activated depending on the preparation approach (e.g., co-precipitation requiring fields such as precipitating agent, synthesis pH, aging time, and aging temperature). In addition, method-independent fields—such as precursor identity, precursor quantity, and storage conditions—are included to ensure consistent documentation across synthesis strategies.
 """,
-    "Characterization": """The Characterization data class documents experimental techniques used to determine structural, electronic, compositional, and physicochemical properties of catalysts. It captures both measurement parameters and relevant contextual information required for interpretation and comparison.
+    "Characterization":   """The Characterization data class documents experimental techniques used to determine structural, electronic, compositional, and physicochemical properties of catalysts. It captures both measurement parameters and relevant contextual information required for interpretation and comparison.
 
 The class follows a hierarchical structure in which selection of a characterization technique activates technique-specific metadata fields (e.g., radiation source for X-ray diffraction or solvent for nuclear magnetic resonance spectroscopy). Metadata on sample preparation and pre-treatment are also included, as these factors directly influence measurement outcomes.""",
-    "Reaction":         """The Reaction data class defines metadata required to document catalytic testing procedures, reactor configurations, operating conditions, and analytical methods. It provides structured descriptors necessary to contextualize catalytic performance data.
+    "CatalyticReaction":  """The Reaction data class defines metadata required to document catalytic testing procedures, reactor configurations, operating conditions, and analytical methods. It provides structured descriptors necessary to contextualize catalytic performance data.
 
 Core fields include reactor design type, operational parameters, and product identification and quantification methods. The class also specifies metadata required to report and evaluate catalyst performance metrics, enabling structured comparison across experimental studies.""",
-    "Simulation":       """The Simulation data class captures metadata describing theoretical and computational studies in catalysis. It documents methodological background, computational settings, and modeling approaches required to interpret simulation results.
+    "Simulation":         """The Simulation data class captures metadata describing theoretical and computational studies in catalysis. It documents methodological background, computational settings, and modeling approaches required to interpret simulation results.
 
 Computational approaches are organized under the parent field simulation method, which includes techniques such as density functional theory, molecular dynamics, microkinetic modeling, and Monte Carlo simulations. Selection of a specific method activates the corresponding method-specific metadata fields necessary to describe model setup and computational parameters.""",
 }
@@ -345,17 +353,28 @@ def generate_markdown_for_main_class(schema: dict, main_class: str, output_file:
     class_uri      = main_class_def.get("class_uri", "")
     is_abstract    = main_class_def.get("abstract", False)
 
-    description = CLASS_DESCRIPTIONS.get(main_class, "test description")
-    md  = f"# {snake_to_readable(main_class)}\n\n{description}\n\n"
+    display_name = DISPLAY_NAMES.get(main_class, main_class)
+    description  = CLASS_DESCRIPTIONS.get(main_class, "test description")
+    md  = f"# {snake_to_readable(display_name)}\n\n"
 
+    # Warning admonition for classes whose schema name differs from the display name
+    if main_class != display_name:
+        md += (f'!!! note "Schema class name"\n'
+               f'    In the CoreMeta4Cat schema this class is named **`{main_class}`** '
+               f'(not `{display_name}`) to avoid name conflicts with identically named '
+               f'classes in top-level profiles such as chemdcat-ap. '
+               f'The simplified name **{display_name}** is used throughout this documentation '
+               f'for readability. When writing data files or referencing the class programmatically, '
+               f'always use the full schema name `{main_class}`.\n\n')
 
+    md += f"{description}\n\n"
 
     if is_abstract:
         md += "**Abstract Class**\n\n"
     if class_uri:
         md += f"**CURIE:** [`{class_uri}`]({class_uri})\n\n"
 
-    md += (f'<iframe\n    src="../assets/metadata_{main_class.lower()}_hierarchy.html"\n'
+    md += (f'<iframe\n    src="../assets/metadata_{display_name.lower()}_hierarchy.html"\n'
            f'    width="100%"\n    height= "470vh"\n'
            f'    style="border: 2px solid #5C88DA; background-color: #F0F8FF;\n    "\n'
            f'    allowfullscreen\n></iframe>')
@@ -393,10 +412,10 @@ def main(schema_dir: str, output_dir: str = "."):
     output_path.mkdir(parents=True, exist_ok=True)
 
     main_classes = {
-        "Synthesis":        "synthesis.md",
-        "Characterization": "characterization.md",
-        "Reaction":         "reaction.md",
-        "Simulation":       "simulation.md",
+        "Synthesis":         "synthesis.md",
+        "Characterization":  "characterization.md",
+        "CatalyticReaction": "reaction.md",
+        "Simulation":        "simulation.md",
     }
 
     print(f"Generating Markdown docs in: {output_dir}")

@@ -99,7 +99,7 @@ gen-doc: schema-to-excel _gen-yaml
 
 # Build docs and run test server
 [group('model development')]
-testdoc: gen-doc _serve
+testdoc: gen-doc gen-schema-docs gen-charts _serve
 
 # Generate the Python data models (dataclasses & pydantic)
 gen-python:

@@ -55,6 +55,13 @@ BASE_COLORS: dict[str, dict[str, str]] = {
     "coremeta4cat":     {"M": "#e66101", "R": "#fdb863", "O": "#fddbc7"},
 }
 
+# Maps schema class names to their simplified display names used in charts and docs.
+# Needed where the schema uses a fully qualified name to avoid clashes with
+# identically named classes in top-level profiles (e.g. chemdcat-ap).
+DISPLAY_NAMES: dict[str, str] = {
+    "CatalyticReaction": "Reaction",
+}
+
 # ─────────────────────────────────────────────────────────────────────────────
 # M / R / O classification
 # ─────────────────────────────────────────────────────────────────────────────
@@ -186,7 +193,8 @@ def _build_tree_for_class(
 
 def build_sunburst_chart(schema: dict, class_name: str) -> str:
     """Return standalone HTML for one sunburst chart."""
-    key = class_name.lower()
+    display_name = DISPLAY_NAMES.get(class_name, class_name)
+    key = display_name.lower()
     color_map = BASE_COLORS.get(key, BASE_COLORS["coremeta4cat"])
 
     ids:     list[str] = []
@@ -195,10 +203,12 @@ def build_sunburst_chart(schema: dict, class_name: str) -> str:
     colors:  list[str] = []
     hover:   list[str] = []
 
-    # Root node
+    # Root node — use display name as label; hover reveals the schema class name when different
     root_color = color_map["M"]
+    schema_note = f" (schema class: {class_name})" if class_name != display_name else ""
     _add_node(ids, names, parents, colors, hover,
-              class_name, class_name, "", root_color, f"Data class: {class_name}")
+              class_name, display_name, "", root_color,
+              f"Data class: {display_name}{schema_note}")
 
     _build_tree_for_class(
         schema, class_name, class_name,
@@ -255,7 +265,7 @@ def build_overview_chart(schema: dict) -> str:
     Simulation) as branches under a single 'CoreMeta4Cat' root node.
     Each branch uses the colour palette of its respective data class.
     """
-    main_classes = ["Synthesis", "Characterization", "Reaction", "Simulation"]
+    main_classes = ["Synthesis", "Characterization", "CatalyticReaction", "Simulation"]
 
     ids:     list[str] = []
     names:   list[str] = []
@@ -269,13 +279,15 @@ def build_overview_chart(schema: dict) -> str:
               "CoreMeta4Cat — catalysis metadata schema")
 
     for cls in main_classes:
-        key = cls.lower()
+        display_name = DISPLAY_NAMES.get(cls, cls)
+        key = display_name.lower()
         color_map = BASE_COLORS.get(key, BASE_COLORS["coremeta4cat"])
         cls_id = f"{root_id}|{cls}"
+        schema_note = f" (schema class: {cls})" if cls != display_name else ""
 
         _add_node(ids, names, parents, colors, hover,
-                  cls_id, cls, root_id, color_map["M"],
-                  f"Data class: {cls}")
+                  cls_id, display_name, root_id, color_map["M"],
+                  f"Data class: {display_name}{schema_note}")
 
         _build_tree_for_class(
             schema, cls, cls_id,
@@ -337,11 +349,12 @@ def main(schema_dir: str, output_dir: str) -> None:
     out = Path(output_dir)
     out.mkdir(parents=True, exist_ok=True)
 
-    main_classes = ["Synthesis", "Characterization", "Reaction", "Simulation"]
+    main_classes = ["Synthesis", "Characterization", "CatalyticReaction", "Simulation"]
     print(f"Generating sunburst charts in: {output_dir}")
     for cls in main_classes:
         html = build_sunburst_chart(schema, cls)
-        dest = out / f"metadata_{cls.lower()}_hierarchy.html"
+        display_name = DISPLAY_NAMES.get(cls, cls)
+        dest = out / f"metadata_{display_name.lower()}_hierarchy.html"
         dest.write_text(html, encoding="utf-8")
         print(f"  OK {dest}")
 
