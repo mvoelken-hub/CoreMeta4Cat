@@ -142,7 +142,11 @@ def test_data_sheets_have_rows(generated_workbook):
 
 def test_header_columns(generated_workbook):
     """Each data sheet has exactly the expected column headers in order."""
-    expected = ["label", "type", "domain", "M / R / O", "range", "uri", "description"]
+    expected = [
+        "label", "type", "domain", "M / R / O", "range",
+        "multivalued", "inlined as list", "unit",
+        "uri", "description",
+    ]
     wb = openpyxl.load_workbook(str(generated_workbook), read_only=True, data_only=True)
     for sheet_name in SHEET_NAMES:
         ws = wb[sheet_name]
