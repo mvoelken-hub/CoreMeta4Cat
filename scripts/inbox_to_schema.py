@@ -231,12 +231,30 @@ def build_label_index(schema: dict) -> tuple[dict[str, str], dict[str, str]]:
     """
     Return (label_to_slot, label_to_class): inverse of snake_to_readable for
     every slot and class defined in the merged schema.
+
+    label_to_slot covers:
+      • globally-defined slots (schema["slots"])
+      • slots referenced only via class slot_usage blocks (e.g. had_input_entity,
+        realized_plan) that are not in the global slots dict but appear in the
+        Excel because _collect_rows uses get_class_ranged_slot_usage.
     """
     label_to_slot:  dict[str, str] = {}
     label_to_class: dict[str, str] = {}
 
+    # 1. Global slots
     for name in schema.get("slots", {}):
         label_to_slot[snake_to_readable(name)] = name
+
+    # 2. Slot-usage-only slots: referenced in class slot_usage but not globally
+    #    defined (e.g. had_input_entity in Synthesis.slot_usage).  These are
+    #    rendered by schema_to_excel as top-level slot rows with an empty domain
+    #    and must be recognised as existing, not new.
+    for class_def in schema.get("classes", {}).values():
+        for slot_name in (class_def.get("slot_usage") or {}):
+            label = snake_to_readable(slot_name)
+            if label not in label_to_slot:
+                label_to_slot[label] = slot_name
+
     for name in schema.get("classes", {}):
         label_to_class[snake_to_readable(name)] = name
 
@@ -477,23 +495,73 @@ def plan_changes(
         for row in rows:
             label    = row["label"]
             row_type = row["type"]
+            domain   = row["domain"]
 
             if row_type == "slot":
                 slot_name = label_to_slot.get(label)
-                if slot_name is None:
+
+                if slot_name is not None:
+                    # ── Known global slot ───────────────────────────────────
+                    # If the row has a domain (e.g. domain="Precursor"), the
+                    # slot lives in that subclass's slot_usage, not in the
+                    # top-level class.  Use the domain class as context so
+                    # _plan_slot_changes targets the right YAML node.
+                    effective_class = (
+                        (label_to_class.get(domain) or domain)
+                        if domain else schema_class
+                    )
+                    seen_slot_names.add(slot_name)
+                    _plan_slot_changes(
+                        row, slot_name, schema, sheet_title, effective_class,
+                        slot_origin, class_origin, changes, reporter,
+                    )
+
+                elif domain:
+                    # ── Unknown label + non-empty domain ───────────────────
+                    # Could be a slot_usage-only slot (not in global slots:)
+                    # defined on the domain class (e.g. has_concentration in
+                    # CoPrecipitation).  Derive the slot name and check.
+                    effective_class = label_to_class.get(domain) or domain
+                    derived_name = _label_to_slot_name(label)
+                    cls_def = schema.get("classes", {}).get(effective_class, {})
+                    if derived_name in (cls_def.get("slot_usage") or {}):
+                        seen_slot_names.add(derived_name)
+                        _plan_slot_changes(
+                            row, derived_name, schema, sheet_title,
+                            effective_class, slot_origin, class_origin,
+                            changes, reporter,
+                        )
+                    else:
+                        # Slot belongs to the subclass hierarchy (mixin,
+                        # attribute, or imported slot) and cannot be modified
+                        # via the inbox workflow.  Skip silently — these rows
+                        # are structural display information from the Excel
+                        # generator, not editable fields.
+                        reporter.info(
+                            sheet_title, f"slot '{label}'",
+                            f"Skipped: belongs to sub-class `{effective_class}` "
+                            f"and is not modifiable via the inbox workflow "
+                            f"(edit the YAML directly).",
+                        )
+
+                else:
+                    # ── Unknown label + empty domain → new top-level slot ──
                     _plan_new_slot(
                         row, sheet_title, schema_class,
                         schema, class_origin, slot_origin, label_to_slot,
                         changes, reporter,
                     )
-                else:
-                    seen_slot_names.add(slot_name)
-                    _plan_slot_changes(
-                        row, slot_name, schema, sheet_title, schema_class,
-                        slot_origin, class_origin, changes, reporter,
-                    )
 
             elif row_type == "class":
+                # ── When a class row has a domain, that domain is the label
+                # of the parent slot (e.g. "had input entity" for Precursor).
+                # Mark that parent slot as seen so the deletion detector does
+                # not falsely warn that it is missing from the workbook.
+                if domain:
+                    parent_slot_name = label_to_slot.get(domain)
+                    if parent_slot_name:
+                        seen_slot_names.add(parent_slot_name)
+
                 class_name = label_to_class.get(label)
                 if class_name is None:
                     _plan_new_class(
@@ -1262,6 +1330,13 @@ def main(inbox_path: Path) -> int:
 
 
 if __name__ == "__main__":
+    # Ensure stdout is UTF-8 even on Windows (emoji in Markdown output otherwise
+    # crash with UnicodeEncodeError on cp1252 consoles / cmd.exe).
+    if hasattr(sys.stdout, "reconfigure"):
+        sys.stdout.reconfigure(encoding="utf-8", errors="replace")
+    if hasattr(sys.stderr, "reconfigure"):
+        sys.stderr.reconfigure(encoding="utf-8", errors="replace")
+
     inbox_path = Path(sys.argv[1]) if len(sys.argv) > 1 else DEFAULT_INBOX
     if not inbox_path.exists():
         print(

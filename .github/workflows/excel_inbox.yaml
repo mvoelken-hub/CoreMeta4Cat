@@ -122,9 +122,15 @@ jobs:
         run: |
           # Run inbox_to_schema.py from _main_branch/ against the inbox Excel
           # (which lives in the PR branch working directory, one level up).
+          #
+          # set +e: GitHub Actions shells run with -eo pipefail, which means
+          # a failed command substitution (OUTPUT=$(cmd)) would abort the shell
+          # before we can write the output to GITHUB_ENV for the PR comment.
+          set +e
           OUTPUT=$(uv run python scripts/inbox_to_schema.py \
             "../${{ env.INBOX_FILE }}" 2>&1)
           EXIT_CODE=$?
+          set -e
 
           echo "$OUTPUT"
 
@@ -164,9 +170,12 @@ jobs:
           steps.apply.outcome != 'failure'
         id: test
         run: |
-          # Capture output + exit code; shell continues even on failure (no set -e)
+          # Capture output + exit code; disable set -e so a failing test suite
+          # does not abort the shell before we can write to GITHUB_ENV.
+          set +e
           TEST_OUTPUT=$(just test 2>&1)
           TEST_EXIT=$?
+          set -e
 
           echo "$TEST_OUTPUT"
 
@@ -208,8 +217,10 @@ jobs:
           steps.regen_excel.outcome == 'success'
         id: roundtrip
         run: |
+          set +e
           RT_OUTPUT=$(uv run python scripts/excel_to_schema.py \
             "../${{ env.INBOX_FILE }}" 2>&1)
+          set -e
 
           echo "$RT_OUTPUT"
 
