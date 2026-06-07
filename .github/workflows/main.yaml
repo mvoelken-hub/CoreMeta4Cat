@@ -7,6 +7,12 @@ on:  # yamllint disable-line rule:truthy
   push:
     branches: [main]
   pull_request:
+    # Inbox-only PRs are handled exclusively by excel_inbox.yaml.
+    # This workflow fires after the excel_inbox bot-commit (which removes the
+    # inbox file and adds schema changes), so the test matrix runs on the
+    # correct, already-validated schema — satisfying branch-protection checks.
+    paths-ignore:
+      - "inbox/**"
 
 env:
   FORCE_COLOR: "1" # Make tools pretty.
