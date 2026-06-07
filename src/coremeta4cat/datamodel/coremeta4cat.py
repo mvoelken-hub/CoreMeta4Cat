@@ -1,5 +1,5 @@
 # Auto generated from coremeta4cat.yaml by pythongen.py version: 0.0.1
-# Generation date: 2026-06-06T01:19:33
+# Generation date: 2026-06-07T18:27:07
 # Schema: coremeta4cat-metadata
 #
 # id: https://w3id.org/nfdi4cat/coremeta4cat
@@ -53,6 +53,7 @@
 #   slots and enums) and the four subprofile modules.
 #
 #   Full import hierarchy:
+#   ```
 #     coremeta4cat.yaml  (this file — aggregator + CatalysisDataset entry point)
 #       +-- coremeta4cat_common.yaml         (shared slots, enums)
 #             +-- chem_dcat_ap          (SubstanceSample, ChemicalSubstance, …)
@@ -64,6 +65,7 @@
 #       +-- coremeta4cat_characterization_ap  (Step 4 — Characterization, 24 techniques, mixins)
 #       +-- coremeta4cat_reaction_ap          (Step 5 — Reaction, 8 Reactor subclasses)
 #       +-- coremeta4cat_simulation_ap        (Step 6 — Simulation, 4 methods, 12 properties, mixins)
+#   ```
 # license: CC-BY-4.0
 
 import dataclasses
@@ -8953,7 +8955,7 @@ class slots:
 slots.has_flow_rate = Slot(uri=SIO['000008'], name="has_flow_rate", curie=SIO.curie('000008'),
                    model_uri=COREMETA4CAT.has_flow_rate, domain=None, range=Optional[Union[Union[dict, VolumeFlowRate], list[Union[dict, VolumeFlowRate]]]])
 
-slots.has_heating_rate = Slot(uri=SIO['000008'], name="has_heating_rate", curie=SIO.curie('000008'),
+slots.has_heating_rate = Slot(uri=VOC4CAT['0008116'], name="has_heating_rate", curie=VOC4CAT.curie('0008116'),
                    model_uri=COREMETA4CAT.has_heating_rate, domain=None, range=Optional[Union[Union[dict, HeatingRate], list[Union[dict, HeatingRate]]]])
 
 slots.has_angular_velocity = Slot(uri=SIO['000008'], name="has_angular_velocity", curie=SIO.curie('000008'),
@@ -8995,7 +8997,7 @@ slots.has_calcination_temperature_range = Slot(uri=COREMETA4CAT.hasCalcinationTe
 slots.has_calcination_dwelling_time = Slot(uri=SIO['000008'], name="has_calcination_dwelling_time", curie=SIO.curie('000008'),
                    model_uri=COREMETA4CAT.has_calcination_dwelling_time, domain=None, range=Optional[Union[dict, Duration]])
 
-slots.has_calcination_heating_rate = Slot(uri=SIO['000008'], name="has_calcination_heating_rate", curie=SIO.curie('000008'),
+slots.has_calcination_heating_rate = Slot(uri=VOC4CAT['0008116'], name="has_calcination_heating_rate", curie=VOC4CAT.curie('0008116'),
                    model_uri=COREMETA4CAT.has_calcination_heating_rate, domain=None, range=Optional[Union[Union[dict, HeatingRate], list[Union[dict, HeatingRate]]]])
 
 slots.has_calcination_gas_flow_rate = Slot(uri=SIO['000008'], name="has_calcination_gas_flow_rate", curie=SIO.curie('000008'),
@@ -9106,7 +9108,7 @@ slots.impregnation_duration = Slot(uri=VOC4CAT['0008120'], name="impregnation_du
 slots.impregnation_temperature = Slot(uri=VOC4CAT['0008121'], name="impregnation_temperature", curie=VOC4CAT.curie('0008121'),
                    model_uri=COREMETA4CAT.impregnation_temperature, domain=None, range=Optional[Union[Union[dict, Temperature], list[Union[dict, Temperature]]]])
 
-slots.precipitating_agent = Slot(uri=COREMETA4CAT.precipitating_agent, name="precipitating_agent", curie=COREMETA4CAT.curie('precipitating_agent'),
+slots.precipitating_agent = Slot(uri=VOC4CAT['0008203'], name="precipitating_agent", curie=VOC4CAT.curie('0008203'),
                    model_uri=COREMETA4CAT.precipitating_agent, domain=None, range=Optional[Union[dict[Union[str, ChemicalEntityId], Union[dict, ChemicalEntity]], list[Union[dict, ChemicalEntity]]]])
 
 slots.has_mixing_speed = Slot(uri=SIO['000008'], name="has_mixing_speed", curie=SIO.curie('000008'),
@@ -9529,7 +9531,7 @@ slots.minimum_oven_temperature = Slot(uri=COREMETA4CAT.minimum_oven_temperature,
 slots.maximum_oven_temperature = Slot(uri=COREMETA4CAT.maximum_oven_temperature, name="maximum_oven_temperature", curie=COREMETA4CAT.curie('maximum_oven_temperature'),
                    model_uri=COREMETA4CAT.maximum_oven_temperature, domain=None, range=Optional[Union[Union[dict, Temperature], list[Union[dict, Temperature]]]])
 
-slots.heating_ramp = Slot(uri=COREMETA4CAT.heating_ramp, name="heating_ramp", curie=COREMETA4CAT.curie('heating_ramp'),
+slots.heating_ramp = Slot(uri=VOC4CAT['0008116'], name="heating_ramp", curie=VOC4CAT.curie('0008116'),
                    model_uri=COREMETA4CAT.heating_ramp, domain=None, range=Optional[Union[Union[dict, HeatingRate], list[Union[dict, HeatingRate]]]])
 
 slots.acquisition_mode = Slot(uri=COREMETA4CAT.acquisition_mode, name="acquisition_mode", curie=COREMETA4CAT.curie('acquisition_mode'),

@@ -691,7 +691,7 @@ interval rather than a point value. Provide the shared unit as a QUDT DefinedTer
 
 **Cardinality:**  Optional
 
-**CURIE:** [`SIO:000008`](http://semanticscience.org/resource/SIO_000008)
+**CURIE:** [`VOC4CAT:0008116`](https://w3id.org/nfdi4cat/voc4cat_0008116)
 
 **Schema Reference:** [has_calcination_heating_rate](./elements/slots/has_calcination_heating_rate.md)
 
@@ -781,7 +781,7 @@ simultaneously precipitated from solution by a precipitating agent.
 
 **Cardinality:**  Optional, Multivalued
 
-**CURIE:** [`coremeta4cat:precipitating_agent`](https://w3id.org/nfdi4cat/coremeta4cat/precipitating_agent)
+**CURIE:** [`VOC4CAT:0008203`](https://w3id.org/nfdi4cat/voc4cat_0008203)
 
 **Schema Reference:** [precipitating_agent](./elements/slots/precipitating_agent.md)
 
@@ -1337,7 +1337,7 @@ interval rather than a point value. Provide the shared unit as a QUDT DefinedTer
 
 **Cardinality:**  Optional
 
-**CURIE:** [`SIO:000008`](http://semanticscience.org/resource/SIO_000008)
+**CURIE:** [`VOC4CAT:0008116`](https://w3id.org/nfdi4cat/voc4cat_0008116)
 
 **Schema Reference:** [has_calcination_heating_rate](./elements/slots/has_calcination_heating_rate.md)
 
@@ -2635,7 +2635,7 @@ is precipitated directly onto the support surface.
 
 **Cardinality:**  Optional, Multivalued
 
-**CURIE:** [`coremeta4cat:precipitating_agent`](https://w3id.org/nfdi4cat/coremeta4cat/precipitating_agent)
+**CURIE:** [`VOC4CAT:0008203`](https://w3id.org/nfdi4cat/voc4cat_0008203)
 
 **Schema Reference:** [precipitating_agent](./elements/slots/precipitating_agent.md)
 
@@ -3191,7 +3191,7 @@ interval rather than a point value. Provide the shared unit as a QUDT DefinedTer
 
 **Cardinality:**  Optional
 
-**CURIE:** [`SIO:000008`](http://semanticscience.org/resource/SIO_000008)
+**CURIE:** [`VOC4CAT:0008116`](https://w3id.org/nfdi4cat/voc4cat_0008116)
 
 **Schema Reference:** [has_calcination_heating_rate](./elements/slots/has_calcination_heating_rate.md)
 
@@ -3847,7 +3847,7 @@ interval rather than a point value. Provide the shared unit as a QUDT DefinedTer
 
 **Cardinality:**  Optional
 
-**CURIE:** [`SIO:000008`](http://semanticscience.org/resource/SIO_000008)
+**CURIE:** [`VOC4CAT:0008116`](https://w3id.org/nfdi4cat/voc4cat_0008116)
 
 **Schema Reference:** [has_calcination_heating_rate](./elements/slots/has_calcination_heating_rate.md)
 
@@ -5293,7 +5293,7 @@ interval rather than a point value. Provide the shared unit as a QUDT DefinedTer
 
 **Cardinality:**  Optional
 
-**CURIE:** [`SIO:000008`](http://semanticscience.org/resource/SIO_000008)
+**CURIE:** [`VOC4CAT:0008116`](https://w3id.org/nfdi4cat/voc4cat_0008116)
 
 **Schema Reference:** [has_calcination_heating_rate](./elements/slots/has_calcination_heating_rate.md)
 

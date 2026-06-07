@@ -53,6 +53,7 @@ description: |-
   slots and enums) and the four subprofile modules.
 
   Full import hierarchy:
+  ```
     coremeta4cat.yaml  (this file — aggregator + CatalysisDataset entry point)
       +-- coremeta4cat_common.yaml         (shared slots, enums)
             +-- chem_dcat_ap          (SubstanceSample, ChemicalSubstance, …)
@@ -64,6 +65,7 @@ description: |-
       +-- coremeta4cat_characterization_ap  (Step 4 — Characterization, 24 techniques, mixins)
       +-- coremeta4cat_reaction_ap          (Step 5 — Reaction, 8 Reactor subclasses)
       +-- coremeta4cat_simulation_ap        (Step 6 — Simulation, 4 methods, 12 properties, mixins)
+  ```
 
 license: CC-BY-4.0
 version: 1.0.0

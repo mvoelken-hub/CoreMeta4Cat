@@ -652,9 +652,8 @@ suspended in an upward-flowing gas or liquid stream.
 <summary><strong>product identification method</strong> (Mandatory, Multivalued)</summary>
 
 **Description:** The analytical method used to identify and/or quantify reaction products.
-Should reference a CharacterizationTechnique instance (e.g. a GCMS or
-HPLC_MS object from coremeta4cat_characterization_ap). The abstract stub
-ProductIdentificationMethod is retained for backward compatibility.
+Should reference a CharacterizationTechnique instance (e.g. GCMS, HPLC_MS).
+The abstract stub ProductIdentificationMethod is retained for backward compatibility.
 
 **Data Type:** ProductIdentificationMethod
 

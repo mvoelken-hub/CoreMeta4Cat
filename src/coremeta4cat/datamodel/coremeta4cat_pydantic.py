@@ -155,6 +155,7 @@ linkml_meta = LinkMLMeta({'default_prefix': 'coremeta4cat',
                     'slots and enums) and the four subprofile modules.\n'
                     '\n'
                     'Full import hierarchy:\n'
+                    '```\n'
                     '  coremeta4cat.yaml  (this file — aggregator + '
                     'CatalysisDataset entry point)\n'
                     '    +-- coremeta4cat_common.yaml         (shared slots, '
@@ -173,7 +174,8 @@ linkml_meta = LinkMLMeta({'default_prefix': 'coremeta4cat',
                     '    +-- coremeta4cat_reaction_ap          (Step 5 — Reaction, '
                     '8 Reactor subclasses)\n'
                     '    +-- coremeta4cat_simulation_ap        (Step 6 — '
-                    'Simulation, 4 methods, 12 properties, mixins)',
+                    'Simulation, 4 methods, 12 properties, mixins)\n'
+                    '```',
      'id': 'https://w3id.org/nfdi4cat/coremeta4cat',
      'imports': ['linkml:types',
                  'coremeta4cat_common',
@@ -463,7 +465,7 @@ provided as a QuantitativeRange. Unit: Degree Celsius.""", json_schema_extra = {
     has_calcination_heating_rate: Optional[list[HeatingRate]] = Field(default=[], description="""Temperature ramp rate during the calcination step.""", json_schema_extra = { "linkml_meta": {'domain_of': ['CalcinationMixin'],
          'is_a': 'has_heating_rate',
          'recommended': True,
-         'slot_uri': 'SIO:000008'} })
+         'slot_uri': 'VOC4CAT:0008116'} })
     has_calcination_gas_flow_rate: Optional[list[VolumeFlowRate]] = Field(default=[], description="""Gas flow rate maintained during calcination.""", json_schema_extra = { "linkml_meta": {'domain_of': ['CalcinationMixin'],
          'is_a': 'has_flow_rate',
          'recommended': True,
@@ -479,8 +481,7 @@ class PrecipitationMixin(ConfiguredBaseModel):
     linkml_meta: ClassVar[LinkMLMeta] = LinkMLMeta({'from_schema': 'https://w3id.org/nfdi4cat/coremeta4cat/synthesis/',
          'mixin': True})
 
-    precipitating_agent: Optional[list[ChemicalEntity]] = Field(default=[], description="""Chemical agent used to induce precipitation (e.g. NaOH, NH3).""", json_schema_extra = { "linkml_meta": {'domain_of': ['PrecipitationMixin'],
-         'slot_uri': 'coremeta4cat:precipitating_agent'} })
+    precipitating_agent: Optional[list[ChemicalEntity]] = Field(default=[], description="""Chemical agent used to induce precipitation (e.g. NaOH, NH3).""", json_schema_extra = { "linkml_meta": {'domain_of': ['PrecipitationMixin'], 'slot_uri': 'VOC4CAT:0008203'} })
     has_concentration: Optional[list[Concentration]] = Field(default=[], description="""The slot to provide the Concentration of a ChemicalSubstance.""", json_schema_extra = { "linkml_meta": {'domain_of': ['PrecipitationMixin',
                        'UVVisSpectroscopy',
                        'DynamicLightScattering',
@@ -604,7 +605,7 @@ Provide unit as a QUDT term (e.g. Degree Celsius, Kelvin).""", json_schema_extra
     has_heating_rate: Optional[list[HeatingRate]] = Field(default=[], description="""Temperature ramp rate during a heating or cooling step.""", json_schema_extra = { "linkml_meta": {'domain_of': ['TemperatureProgramMixin'],
          'is_a': 'has_quantitative_attribute',
          'recommended': True,
-         'slot_uri': 'SIO:000008'} })
+         'slot_uri': 'VOC4CAT:0008116'} })
     has_heating_procedure: Optional[list[HeatingProcedure]] = Field(default=[], description="""Heating procedure or thermal programme applied.""", json_schema_extra = { "linkml_meta": {'domain_of': ['TemperatureProgramMixin', 'GCMS'],
          'is_a': 'has_qualitative_attribute',
          'recommended': True,
@@ -5666,13 +5667,10 @@ class CatalyticReaction(EvaluatedActivity):
                                                                          'reference a '
                                                                          'CharacterizationTechnique '
                                                                          'instance '
-                                                                         '(e.g. a GCMS '
-                                                                         'or\n'
-                                                                         'HPLC_MS '
-                                                                         'object from '
-                                                                         'coremeta4cat_characterization_ap). '
+                                                                         '(e.g. GCMS, '
+                                                                         'HPLC_MS).\n'
                                                                          'The abstract '
-                                                                         'stub\n'
+                                                                         'stub '
                                                                          'ProductIdentificationMethod '
                                                                          'is retained '
                                                                          'for backward '
@@ -5725,9 +5723,8 @@ vol% or mol%). For fixed-composition experiments use reactant.has_concentration.
          'is_a': 'has_duration',
          'slot_uri': 'SIO:000008'} })
     product_identification_method: list[ProductIdentificationMethod] = Field(default=..., description="""The analytical method used to identify and/or quantify reaction products.
-Should reference a CharacterizationTechnique instance (e.g. a GCMS or
-HPLC_MS object from coremeta4cat_characterization_ap). The abstract stub
-ProductIdentificationMethod is retained for backward compatibility.""", json_schema_extra = { "linkml_meta": {'domain_of': ['CatalyticReaction'],
+Should reference a CharacterizationTechnique instance (e.g. GCMS, HPLC_MS).
+The abstract stub ProductIdentificationMethod is retained for backward compatibility.""", json_schema_extra = { "linkml_meta": {'domain_of': ['CatalyticReaction'],
          'slot_uri': 'coremeta4cat:product_identification_method'} })
     id: str = Field(default=..., description="""A slot to provide an URI for an entity within this schema.""", json_schema_extra = { "linkml_meta": {'domain_of': ['Activity',
                        'AgenticEntity',
@@ -6429,7 +6426,7 @@ provided as a QuantitativeRange. Unit: Degree Celsius.""", json_schema_extra = {
     has_calcination_heating_rate: Optional[list[HeatingRate]] = Field(default=[], description="""Temperature ramp rate during the calcination step.""", json_schema_extra = { "linkml_meta": {'domain_of': ['CalcinationMixin'],
          'is_a': 'has_heating_rate',
          'recommended': True,
-         'slot_uri': 'SIO:000008'} })
+         'slot_uri': 'VOC4CAT:0008116'} })
     has_calcination_gas_flow_rate: Optional[list[VolumeFlowRate]] = Field(default=[], description="""Gas flow rate maintained during calcination.""", json_schema_extra = { "linkml_meta": {'domain_of': ['CalcinationMixin'],
          'is_a': 'has_flow_rate',
          'recommended': True,
@@ -6528,8 +6525,7 @@ class CoPrecipitation(PreparationMethod, PrecipitationMixin, CalcinationMixin, D
          'from_schema': 'https://w3id.org/nfdi4cat/coremeta4cat/synthesis/',
          'mixins': ['PrecipitationMixin', 'DryingMixin', 'CalcinationMixin']})
 
-    precipitating_agent: Optional[list[ChemicalEntity]] = Field(default=[], description="""Chemical agent used to induce precipitation (e.g. NaOH, NH3).""", json_schema_extra = { "linkml_meta": {'domain_of': ['PrecipitationMixin'],
-         'slot_uri': 'coremeta4cat:precipitating_agent'} })
+    precipitating_agent: Optional[list[ChemicalEntity]] = Field(default=[], description="""Chemical agent used to induce precipitation (e.g. NaOH, NH3).""", json_schema_extra = { "linkml_meta": {'domain_of': ['PrecipitationMixin'], 'slot_uri': 'VOC4CAT:0008203'} })
     has_concentration: Optional[list[Concentration]] = Field(default=[], description="""The slot to provide the Concentration of a ChemicalSubstance.""", json_schema_extra = { "linkml_meta": {'domain_of': ['PrecipitationMixin',
                        'UVVisSpectroscopy',
                        'DynamicLightScattering',
@@ -6592,7 +6588,7 @@ provided as a QuantitativeRange. Unit: Degree Celsius.""", json_schema_extra = {
     has_calcination_heating_rate: Optional[list[HeatingRate]] = Field(default=[], description="""Temperature ramp rate during the calcination step.""", json_schema_extra = { "linkml_meta": {'domain_of': ['CalcinationMixin'],
          'is_a': 'has_heating_rate',
          'recommended': True,
-         'slot_uri': 'SIO:000008'} })
+         'slot_uri': 'VOC4CAT:0008116'} })
     has_calcination_gas_flow_rate: Optional[list[VolumeFlowRate]] = Field(default=[], description="""Gas flow rate maintained during calcination.""", json_schema_extra = { "linkml_meta": {'domain_of': ['CalcinationMixin'],
          'is_a': 'has_flow_rate',
          'recommended': True,
@@ -7278,8 +7274,7 @@ class DepositionPrecipitation(PreparationMethod, PrecipitationMixin, Calcination
          'slot_uri': 'coremeta4cat:deposition_temperature'} })
     deposition_time: Optional[list[Duration]] = Field(default=[], description="""Duration of the deposition step.""", json_schema_extra = { "linkml_meta": {'domain_of': ['DepositionPrecipitation'],
          'slot_uri': 'coremeta4cat:deposition_time'} })
-    precipitating_agent: Optional[list[ChemicalEntity]] = Field(default=[], description="""Chemical agent used to induce precipitation (e.g. NaOH, NH3).""", json_schema_extra = { "linkml_meta": {'domain_of': ['PrecipitationMixin'],
-         'slot_uri': 'coremeta4cat:precipitating_agent'} })
+    precipitating_agent: Optional[list[ChemicalEntity]] = Field(default=[], description="""Chemical agent used to induce precipitation (e.g. NaOH, NH3).""", json_schema_extra = { "linkml_meta": {'domain_of': ['PrecipitationMixin'], 'slot_uri': 'VOC4CAT:0008203'} })
     has_concentration: Optional[list[Concentration]] = Field(default=[], description="""The slot to provide the Concentration of a ChemicalSubstance.""", json_schema_extra = { "linkml_meta": {'domain_of': ['PrecipitationMixin',
                        'UVVisSpectroscopy',
                        'DynamicLightScattering',
@@ -7342,7 +7337,7 @@ provided as a QuantitativeRange. Unit: Degree Celsius.""", json_schema_extra = {
     has_calcination_heating_rate: Optional[list[HeatingRate]] = Field(default=[], description="""Temperature ramp rate during the calcination step.""", json_schema_extra = { "linkml_meta": {'domain_of': ['CalcinationMixin'],
          'is_a': 'has_heating_rate',
          'recommended': True,
-         'slot_uri': 'SIO:000008'} })
+         'slot_uri': 'VOC4CAT:0008116'} })
     has_calcination_gas_flow_rate: Optional[list[VolumeFlowRate]] = Field(default=[], description="""Gas flow rate maintained during calcination.""", json_schema_extra = { "linkml_meta": {'domain_of': ['CalcinationMixin'],
          'is_a': 'has_flow_rate',
          'recommended': True,
@@ -7617,7 +7612,7 @@ provided as a QuantitativeRange. Unit: Degree Celsius.""", json_schema_extra = {
     has_calcination_heating_rate: Optional[list[HeatingRate]] = Field(default=[], description="""Temperature ramp rate during the calcination step.""", json_schema_extra = { "linkml_meta": {'domain_of': ['CalcinationMixin'],
          'is_a': 'has_heating_rate',
          'recommended': True,
-         'slot_uri': 'SIO:000008'} })
+         'slot_uri': 'VOC4CAT:0008116'} })
     has_calcination_gas_flow_rate: Optional[list[VolumeFlowRate]] = Field(default=[], description="""Gas flow rate maintained during calcination.""", json_schema_extra = { "linkml_meta": {'domain_of': ['CalcinationMixin'],
          'is_a': 'has_flow_rate',
          'recommended': True,
@@ -8250,7 +8245,7 @@ provided as a QuantitativeRange. Unit: Degree Celsius.""", json_schema_extra = {
     has_calcination_heating_rate: Optional[list[HeatingRate]] = Field(default=[], description="""Temperature ramp rate during the calcination step.""", json_schema_extra = { "linkml_meta": {'domain_of': ['CalcinationMixin'],
          'is_a': 'has_heating_rate',
          'recommended': True,
-         'slot_uri': 'SIO:000008'} })
+         'slot_uri': 'VOC4CAT:0008116'} })
     has_calcination_gas_flow_rate: Optional[list[VolumeFlowRate]] = Field(default=[], description="""Gas flow rate maintained during calcination.""", json_schema_extra = { "linkml_meta": {'domain_of': ['CalcinationMixin'],
          'is_a': 'has_flow_rate',
          'recommended': True,
@@ -9919,7 +9914,7 @@ Provide unit as a QUDT term (e.g. Degree Celsius, Kelvin).""", json_schema_extra
     has_heating_rate: Optional[list[HeatingRate]] = Field(default=[], description="""Temperature ramp rate during a heating or cooling step.""", json_schema_extra = { "linkml_meta": {'domain_of': ['TemperatureProgramMixin'],
          'is_a': 'has_quantitative_attribute',
          'recommended': True,
-         'slot_uri': 'SIO:000008'} })
+         'slot_uri': 'VOC4CAT:0008116'} })
     has_heating_procedure: Optional[list[HeatingProcedure]] = Field(default=[], description="""Heating procedure or thermal programme applied.""", json_schema_extra = { "linkml_meta": {'domain_of': ['TemperatureProgramMixin', 'GCMS'],
          'is_a': 'has_qualitative_attribute',
          'recommended': True,
@@ -10024,7 +10019,7 @@ Provide unit as a QUDT term (e.g. Degree Celsius, Kelvin).""", json_schema_extra
     has_heating_rate: Optional[list[HeatingRate]] = Field(default=[], description="""Temperature ramp rate during a heating or cooling step.""", json_schema_extra = { "linkml_meta": {'domain_of': ['TemperatureProgramMixin'],
          'is_a': 'has_quantitative_attribute',
          'recommended': True,
-         'slot_uri': 'SIO:000008'} })
+         'slot_uri': 'VOC4CAT:0008116'} })
     has_heating_procedure: Optional[list[HeatingProcedure]] = Field(default=[], description="""Heating procedure or thermal programme applied.""", json_schema_extra = { "linkml_meta": {'domain_of': ['TemperatureProgramMixin', 'GCMS'],
          'is_a': 'has_qualitative_attribute',
          'recommended': True,
@@ -10129,7 +10124,7 @@ Provide unit as a QUDT term (e.g. Degree Celsius, Kelvin).""", json_schema_extra
     has_heating_rate: Optional[list[HeatingRate]] = Field(default=[], description="""Temperature ramp rate during a heating or cooling step.""", json_schema_extra = { "linkml_meta": {'domain_of': ['TemperatureProgramMixin'],
          'is_a': 'has_quantitative_attribute',
          'recommended': True,
-         'slot_uri': 'SIO:000008'} })
+         'slot_uri': 'VOC4CAT:0008116'} })
     has_heating_procedure: Optional[list[HeatingProcedure]] = Field(default=[], description="""Heating procedure or thermal programme applied.""", json_schema_extra = { "linkml_meta": {'domain_of': ['TemperatureProgramMixin', 'GCMS'],
          'is_a': 'has_qualitative_attribute',
          'recommended': True,
@@ -11464,7 +11459,7 @@ class GCMS(CharacterizationTechnique, MassRangeMixin, ChromatographyMixin):
     inlet_temperature: Optional[list[Temperature]] = Field(default=[], description="""GC inlet temperature.""", json_schema_extra = { "linkml_meta": {'domain_of': ['GCMS'], 'slot_uri': 'coremeta4cat:inlet_temperature'} })
     minimum_oven_temperature: Optional[list[Temperature]] = Field(default=[], description="""Minimum oven temperature in GC temperature programme.""", json_schema_extra = { "linkml_meta": {'domain_of': ['GCMS'], 'slot_uri': 'coremeta4cat:minimum_oven_temperature'} })
     maximum_oven_temperature: Optional[list[Temperature]] = Field(default=[], description="""Maximum oven temperature in GC temperature programme.""", json_schema_extra = { "linkml_meta": {'domain_of': ['GCMS'], 'slot_uri': 'coremeta4cat:maximum_oven_temperature'} })
-    heating_ramp: Optional[list[HeatingRate]] = Field(default=[], description="""Temperature ramp rate in GC oven programme.""", json_schema_extra = { "linkml_meta": {'domain_of': ['GCMS'], 'slot_uri': 'coremeta4cat:heating_ramp'} })
+    heating_ramp: Optional[list[HeatingRate]] = Field(default=[], description="""Temperature ramp rate in GC oven programme.""", json_schema_extra = { "linkml_meta": {'domain_of': ['GCMS'], 'slot_uri': 'VOC4CAT:0008116'} })
     has_heating_procedure: Optional[list[HeatingProcedure]] = Field(default=[], description="""Heating procedure or thermal programme applied.""", json_schema_extra = { "linkml_meta": {'domain_of': ['TemperatureProgramMixin', 'GCMS'],
          'is_a': 'has_qualitative_attribute',
          'recommended': True,

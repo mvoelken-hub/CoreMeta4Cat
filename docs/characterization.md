@@ -2973,7 +2973,7 @@ interval rather than a point value. Provide the shared unit as a QUDT DefinedTer
 
 **Cardinality:**  Optional
 
-**CURIE:** [`SIO:000008`](http://semanticscience.org/resource/SIO_000008)
+**CURIE:** [`VOC4CAT:0008116`](https://w3id.org/nfdi4cat/voc4cat_0008116)
 
 **Schema Reference:** [has_heating_rate](./elements/slots/has_heating_rate.md)
 
@@ -3161,7 +3161,7 @@ interval rather than a point value. Provide the shared unit as a QUDT DefinedTer
 
 **Cardinality:**  Optional
 
-**CURIE:** [`SIO:000008`](http://semanticscience.org/resource/SIO_000008)
+**CURIE:** [`VOC4CAT:0008116`](https://w3id.org/nfdi4cat/voc4cat_0008116)
 
 **Schema Reference:** [has_heating_rate](./elements/slots/has_heating_rate.md)
 
@@ -3349,7 +3349,7 @@ interval rather than a point value. Provide the shared unit as a QUDT DefinedTer
 
 **Cardinality:**  Optional
 
-**CURIE:** [`SIO:000008`](http://semanticscience.org/resource/SIO_000008)
+**CURIE:** [`VOC4CAT:0008116`](https://w3id.org/nfdi4cat/voc4cat_0008116)
 
 **Schema Reference:** [has_heating_rate](./elements/slots/has_heating_rate.md)
 
@@ -5356,7 +5356,7 @@ interval rather than a point value. Provide the shared unit as a QUDT DefinedTer
 
 **Cardinality:**  Optional, Multivalued
 
-**CURIE:** [`coremeta4cat:heating_ramp`](https://w3id.org/nfdi4cat/coremeta4cat/heating_ramp)
+**CURIE:** [`VOC4CAT:0008116`](https://w3id.org/nfdi4cat/voc4cat_0008116)
 
 **Schema Reference:** [heating_ramp](./elements/slots/heating_ramp.md)
 

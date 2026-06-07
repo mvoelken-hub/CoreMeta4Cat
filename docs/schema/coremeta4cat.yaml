@@ -30,16 +30,16 @@ description: "The CoreMeta4Cat describes the minimum information which must be r
   \ SimulationMethod are\n  modelled as Plan (from dcat_ap_plus), the protocol realized\
   \ by the Activity.\n\nThis file is the top-level aggregator. It imports coremeta4cat_common\
   \ (shared\nslots and enums) and the four subprofile modules.\n\nFull import hierarchy:\n\
-  \  coremeta4cat.yaml  (this file \u2014 aggregator + CatalysisDataset entry point)\n\
-  \    +-- coremeta4cat_common.yaml         (shared slots, enums)\n          +-- chem_dcat_ap\
-  \          (SubstanceSample, ChemicalSubstance, \u2026)\n                +-- chemical_reaction_ap\n\
-  \                      +-- chemical_entities_ap\n                            +--\
-  \ material_entities_ap\n                                  +-- dcat_ap_plus  (DCAT-AP-PLUS\
-  \ base)\n    +-- coremeta4cat_synthesis_ap         (Step 3 \u2014 Synthesis, PreparationMethod,\
-  \ mixins)\n    +-- coremeta4cat_characterization_ap  (Step 4 \u2014 Characterization,\
-  \ 24 techniques, mixins)\n    +-- coremeta4cat_reaction_ap          (Step 5 \u2014\
-  \ Reaction, 8 Reactor subclasses)\n    +-- coremeta4cat_simulation_ap        (Step\
-  \ 6 \u2014 Simulation, 4 methods, 12 properties, mixins)"
+  ```\n  coremeta4cat.yaml  (this file \u2014 aggregator + CatalysisDataset entry\
+  \ point)\n    +-- coremeta4cat_common.yaml         (shared slots, enums)\n     \
+  \     +-- chem_dcat_ap          (SubstanceSample, ChemicalSubstance, \u2026)\n \
+  \               +-- chemical_reaction_ap\n                      +-- chemical_entities_ap\n\
+  \                            +-- material_entities_ap\n                        \
+  \          +-- dcat_ap_plus  (DCAT-AP-PLUS base)\n    +-- coremeta4cat_synthesis_ap\
+  \         (Step 3 \u2014 Synthesis, PreparationMethod, mixins)\n    +-- coremeta4cat_characterization_ap\
+  \  (Step 4 \u2014 Characterization, 24 techniques, mixins)\n    +-- coremeta4cat_reaction_ap\
+  \          (Step 5 \u2014 Reaction, 8 Reactor subclasses)\n    +-- coremeta4cat_simulation_ap\
+  \        (Step 6 \u2014 Simulation, 4 methods, 12 properties, mixins)\n```"
 title: CoreMeta4cat Metadata Reference Model
 id: https://w3id.org/nfdi4cat/coremeta4cat
 version: 1.0.0
@@ -679,9 +679,9 @@ slots:
     description: Temperature ramp rate during a heating or cooling step.
     from_schema: https://w3id.org/nfdi4cat/coremeta4cat/common/
     mappings:
-    - SIO:000008
+    - VOC4CAT:0008116
     is_a: has_quantitative_attribute
-    slot_uri: SIO:000008
+    slot_uri: VOC4CAT:0008116
     owner: TemperatureProgramMixin
     domain_of:
     - TemperatureProgramMixin
@@ -886,9 +886,9 @@ slots:
     description: Temperature ramp rate during the calcination step.
     from_schema: https://w3id.org/nfdi4cat/coremeta4cat/common/
     mappings:
-    - SIO:000008
+    - VOC4CAT:0008116
     is_a: has_heating_rate
-    slot_uri: SIO:000008
+    slot_uri: VOC4CAT:0008116
     owner: CalcinationMixin
     domain_of:
     - CalcinationMixin
@@ -1482,8 +1482,8 @@ slots:
     description: Chemical agent used to induce precipitation (e.g. NaOH, NH3).
     from_schema: https://w3id.org/nfdi4cat/coremeta4cat/synthesis/
     mappings:
-    - coremeta4cat:precipitating_agent
-    slot_uri: coremeta4cat:precipitating_agent
+    - VOC4CAT:0008203
+    slot_uri: VOC4CAT:0008203
     owner: PrecipitationMixin
     domain_of:
     - PrecipitationMixin
@@ -3486,8 +3486,8 @@ slots:
     description: Temperature ramp rate in GC oven programme.
     from_schema: https://w3id.org/nfdi4cat/coremeta4cat/characterization/
     mappings:
-    - coremeta4cat:heating_ramp
-    slot_uri: coremeta4cat:heating_ramp
+    - VOC4CAT:0008116
+    slot_uri: VOC4CAT:0008116
     owner: GCMS
     domain_of:
     - GCMS
@@ -7594,11 +7594,9 @@ slots:
     description: 'The analytical method used to identify and/or quantify reaction
       products.
 
-      Should reference a CharacterizationTechnique instance (e.g. a GCMS or
+      Should reference a CharacterizationTechnique instance (e.g. GCMS, HPLC_MS).
 
-      HPLC_MS object from coremeta4cat_characterization_ap). The abstract stub
-
-      ProductIdentificationMethod is retained for backward compatibility.'
+      The abstract stub ProductIdentificationMethod is retained for backward compatibility.'
     from_schema: https://w3id.org/nfdi4cat/coremeta4cat/reaction/
     mappings:
     - coremeta4cat:product_identification_method
@@ -13630,11 +13628,9 @@ classes:
         description: 'The analytical method used to identify and/or quantify reaction
           products.
 
-          Should reference a CharacterizationTechnique instance (e.g. a GCMS or
+          Should reference a CharacterizationTechnique instance (e.g. GCMS, HPLC_MS).
 
-          HPLC_MS object from coremeta4cat_characterization_ap). The abstract stub
-
-          ProductIdentificationMethod is retained for backward compatibility.'
+          The abstract stub ProductIdentificationMethod is retained for backward compatibility.'
         range: ProductIdentificationMethod
         required: true
         multivalued: true
@@ -17914,7 +17910,7 @@ classes:
     class_uri: qudt:Quantity
 metamodel_version: 1.7.0
 source_file: coremeta4cat.yaml
-source_file_date: '2026-06-05T13:11:48'
-source_file_size: 6777
-generation_date: '2026-06-06T18:18:45'
+source_file_date: '2026-06-07T17:29:03'
+source_file_size: 6791
+generation_date: '2026-06-07T17:58:47'
 
