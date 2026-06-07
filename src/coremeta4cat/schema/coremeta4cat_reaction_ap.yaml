@@ -1,4 +1,3 @@
----
 id: https://w3id.org/nfdi4cat/coremeta4cat/reaction/
 name: coremeta4cat-reaction-ap
 title: CoreMeta4cat Reaction Application Profile
@@ -57,8 +56,8 @@ default_prefix: coremeta4cat
 default_range: string
 
 imports:
-  - linkml:types
-  - coremeta4cat_common   # shared has_X sub-slots, atmosphere, enums
+- linkml:types
+- coremeta4cat_common     # shared has_X sub-slots, atmosphere, enums
 
 # ==================== REACTION (EvaluatedActivity) ====================
 
@@ -84,15 +83,15 @@ classes:
       (e.g. ammonia synthesis, CO oxidation) is expressed via rdf_type using a
       voc4cat or ChemO term.
     slots:
-      - catalyst_quantity
-      - reactant
-      - catalyst_type
-      - reactor_temperature_range
-      - has_atmosphere
-      - experiment_pressure
-      - feed_composition_range
-      - has_experiment_duration
-      - product_identification_method
+    - catalyst_quantity
+    - reactant
+    - catalyst_type
+    - reactor_temperature_range
+    - has_atmosphere
+    - experiment_pressure
+    - feed_composition_range
+    - has_experiment_duration
+    - product_identification_method
     slot_usage:
       rdf_type:
         description: |-
@@ -118,9 +117,8 @@ classes:
       product_identification_method:
         description: |-
           The analytical method used to identify and/or quantify reaction products.
-          Should reference a CharacterizationTechnique instance (e.g. a GCMS or
-          HPLC_MS object from coremeta4cat_characterization_ap). The abstract stub
-          ProductIdentificationMethod is retained for backward compatibility.
+          Should reference a CharacterizationTechnique instance (e.g. GCMS, HPLC_MS).
+          The abstract stub ProductIdentificationMethod is retained for backward compatibility.
         range: ProductIdentificationMethod
         required: true
         multivalued: true
@@ -218,9 +216,9 @@ classes:
       Fluidized bed reactor — a reactor in which the catalyst particles are
       suspended in an upward-flowing gas or liquid stream.
     slots:
-      - gas_distributor_type
-      - bed_expansion_height
-      - bubble_size_distribution
+    - gas_distributor_type
+    - bed_expansion_height
+    - bubble_size_distribution
 
 # ==================== SLOTS ====================
 # Shared has_X sub-slots (has_experiment_duration, …) and atmosphere

@@ -1,4 +1,3 @@
----
 id: https://w3id.org/nfdi4cat/coremeta4cat/synthesis/
 name: coremeta4cat-synthesis-ap
 title: CoreMeta4cat Synthesis Application Profile
@@ -41,8 +40,8 @@ default_prefix: coremeta4cat
 default_range: string
 
 imports:
-  - linkml:types
-  - coremeta4cat_common   # shared slots (atmosphere, temperature, drying_*, calcination_*, …) + enums
+- linkml:types
+- coremeta4cat_common     # shared slots (atmosphere, temperature, drying_*, calcination_*, …) + enums
 
 # ==================== MIXINS ====================
 # Slot groups shared across multiple PreparationMethod subclasses.
@@ -59,10 +58,10 @@ classes:
       (Impregnation, CoPrecipitation, DepositionPrecipitation,
       SonochemicalSynthesis, MolecularSynthesis).
     slots:
-      - drying_device
-      - has_drying_temperature
-      - has_drying_duration
-      - has_drying_atmosphere
+    - drying_device
+    - has_drying_temperature
+    - has_drying_duration
+    - has_drying_atmosphere
 
   CalcinationMixin:
     mixin: true
@@ -72,12 +71,12 @@ classes:
       (Impregnation, CoPrecipitation, DepositionPrecipitation,
       SonochemicalSynthesis, ExsolutionSynthesis).
     slots:
-      - has_calcination_temperature_range
-      - has_calcination_dwelling_time
-      - number_of_cycles
-      - has_calcination_atmosphere
-      - has_calcination_heating_rate
-      - has_calcination_gas_flow_rate
+    - has_calcination_temperature_range
+    - has_calcination_dwelling_time
+    - number_of_cycles
+    - has_calcination_atmosphere
+    - has_calcination_heating_rate
+    - has_calcination_gas_flow_rate
 
   PrecipitationMixin:
     mixin: true
@@ -86,17 +85,17 @@ classes:
       preparation methods based on precipitation from solution
       (CoPrecipitation, DepositionPrecipitation).
     slots:
-      - precipitating_agent
-      - has_concentration
-      - has_ph_value
-      - has_mixing_speed
-      - has_mixing_duration
-      - has_mixing_temperature
-      - order_of_addition
-      - filtration
-      - purification
-      - has_aging_temperature
-      - has_aging_duration
+    - precipitating_agent
+    - has_concentration
+    - has_ph_value
+    - has_mixing_speed
+    - has_mixing_duration
+    - has_mixing_temperature
+    - order_of_addition
+    - filtration
+    - purification
+    - has_aging_temperature
+    - has_aging_duration
 
   ThermalSynthesisMixin:
     mixin: true
@@ -106,10 +105,10 @@ classes:
       (Solvothermal, PlasmaAssisted, CombustionSynthesis,
       MicrowaveAssisted, MechanochemicalSynthesis, Sublimation).
     slots:
-      - synthesis_temperature
-      - synthesis_duration
-      - has_vessel_type
-      - has_atmosphere
+    - synthesis_temperature
+    - synthesis_duration
+    - has_vessel_type
+    - has_atmosphere
 
   # ==================== CORE SYNTHESIS CLASSES ====================
 
@@ -128,12 +127,12 @@ classes:
       term (e.g. a VOC4CAT preparation method term), following DCAT-AP-PLUS
       Pattern 3.
     slots:
-      - nominal_composition
-      - catalyst_measured_properties
-      - storage_conditions
-      - catalyst_support
-      - solvent
-      - has_sample_pretreatment
+    - nominal_composition
+    - catalyst_measured_properties
+    - storage_conditions
+    - catalyst_support
+    - solvent
+    - has_sample_pretreatment
     slot_usage:
       nominal_composition:
         required: true
@@ -172,7 +171,7 @@ classes:
       A MaterialSample that serves as input material in a catalyst Synthesis.
       Precursors are consumed or transformed during the preparation process.
     slots:
-      - precursor_quantity
+    - precursor_quantity
     slot_usage:
       precursor_quantity:
         required: true
@@ -212,23 +211,23 @@ classes:
     is_a: PreparationMethod
     class_uri: VOC4CAT:0007028
     mixins:
-      - DryingMixin
-      - CalcinationMixin
+    - DryingMixin
+    - CalcinationMixin
     description: |-
       Catalyst preparation by impregnation: a solution of the active phase
       precursor is brought into contact with the support material.
     slots:
-      - impregnation_type
-      - impregnation_duration
-      - impregnation_temperature
+    - impregnation_type
+    - impregnation_duration
+    - impregnation_temperature
 
   CoPrecipitation:
     is_a: PreparationMethod
     class_uri: VOC4CAT:0007795
     mixins:
-      - PrecipitationMixin
-      - DryingMixin
-      - CalcinationMixin
+    - PrecipitationMixin
+    - DryingMixin
+    - CalcinationMixin
     description: |-
       Catalyst preparation by co-precipitation: precursor salts are
       simultaneously precipitated from solution by a precipitating agent.
@@ -237,57 +236,57 @@ classes:
     is_a: PreparationMethod
     class_uri: CHMO:0001313
     mixins:
-      - DryingMixin
+    - DryingMixin
     description: |-
       Catalyst preparation by the sol-gel process: hydrolysis and condensation
       of precursor molecules to form a colloidal network (gel).
     slots:
-      - hydrolysis_ratio
-      - has_aging_duration
-      - drying
-      - surfactant_template
+    - hydrolysis_ratio
+    - has_aging_duration
+    - drying
+    - surfactant_template
 
   Solvothermal:
     is_a: PreparationMethod
     class_uri: CHMO:0001458
     mixins:
-      - ThermalSynthesisMixin
+    - ThermalSynthesisMixin
     description: |-
       Catalyst preparation under elevated temperature and pressure in a
       sealed vessel using a non-aqueous solvent.
     slots:
-      - filling_volume
-      - stirrer_type
-      - cooling_rate
+    - filling_volume
+    - stirrer_type
+    - cooling_rate
 
   PlasmaAssisted:
     is_a: PreparationMethod
     class_uri: coremeta4cat:PlasmaAssisted # maybe use http://purl.obolibrary.org/obo/MS_1000400
     mixins:
-      - ThermalSynthesisMixin
+    - ThermalSynthesisMixin
     description: |-
       Catalyst preparation using plasma treatment to modify surface
       properties or deposit active components.
     slots:
-      - plasma_type
-      - power_input
-      - exposure_time
-      - synthesis_pressure
+    - plasma_type
+    - power_input
+    - exposure_time
+    - synthesis_pressure
 
   CombustionSynthesis:
     is_a: PreparationMethod
     class_uri: coremeta4cat:CombustionSynthesis # maybe use http://purl.obolibrary.org/obo/CHMO_0001473
     mixins:
-      - ThermalSynthesisMixin
+    - ThermalSynthesisMixin
     description: |-
       Catalyst preparation by combustion of a fuel/oxidizer mixture,
       producing metal oxide catalysts in a single rapid step.
     slots:
-      - fuel
-      - oxidizer
-      - fuel_to_oxidizer_ratio
-      - set_temperature
-      - post_treatment
+    - fuel
+    - oxidizer
+    - fuel_to_oxidizer_ratio
+    - set_temperature
+    - post_treatment
 
   AtomicLayerDeposition:
     is_a: PreparationMethod
@@ -297,52 +296,52 @@ classes:
       self-limiting surface reactions deposit a conformal thin film
       of active phase onto a substrate.
     slots:
-      - substrate
-      - pulse_time
-      - purging_duration
-      - number_of_cycles
-      - deposition_temperature
-      - carrier_gas
+    - substrate
+    - pulse_time
+    - purging_duration
+    - number_of_cycles
+    - deposition_temperature
+    - carrier_gas
 
   DepositionPrecipitation:
     is_a: PreparationMethod
     class_uri: coremeta4cat:DepositionPrecipitation
     mixins:
-      - PrecipitationMixin
-      - DryingMixin
-      - CalcinationMixin
+    - PrecipitationMixin
+    - DryingMixin
+    - CalcinationMixin
     description: |-
       Catalyst preparation by deposition-precipitation: the active phase
       is precipitated directly onto the support surface.
     slots:
-      - deposition_temperature
-      - deposition_time
+    - deposition_temperature
+    - deposition_time
 
   MicrowaveAssisted:
     is_a: PreparationMethod
     class_uri: CHMO:0002906
     mixins:
-      - ThermalSynthesisMixin
+    - ThermalSynthesisMixin
     description: |-
       Catalyst preparation using microwave irradiation to rapidly and
       uniformly heat the reaction mixture.
     slots:
-      - power
-      - microwave_frequency
+    - power
+    - microwave_frequency
 
   SonochemicalSynthesis:
     is_a: PreparationMethod
     class_uri: coremeta4cat:SonochemicalSynthesis
     mixins:
-      - DryingMixin
-      - CalcinationMixin
+    - DryingMixin
+    - CalcinationMixin
     description: |-
       Catalyst preparation using ultrasonic irradiation to drive chemical
       reactions via acoustic cavitation.
     slots:
-      - sonication_power
-      - sonication_duration
-      - has_temperature
+    - sonication_power
+    - sonication_duration
+    - has_temperature
 
   FlameSprayPyrolysis:
     is_a: PreparationMethod
@@ -351,73 +350,73 @@ classes:
       Catalyst preparation by flame spray pyrolysis (FSP): a liquid precursor
       solution is atomised and combusted in a flame to produce nanoparticles.
     slots:
-      - flame_type
-      - has_flow_rate
-      - inlet_system
-      - flame_ring
-      - dispersant
-      - capillary_pressure
-      - fuel_dispersant_ratio
-      - filtration_device
-      - filter_type
+    - flame_type
+    - has_flow_rate
+    - inlet_system
+    - flame_ring
+    - dispersant
+    - capillary_pressure
+    - fuel_dispersant_ratio
+    - filtration_device
+    - filter_type
 
   MechanochemicalSynthesis:
     is_a: PreparationMethod
     class_uri: coremeta4cat:MechanochemicalSynthesis
     mixins:
-      - ThermalSynthesisMixin
+    - ThermalSynthesisMixin
     description: |-
       Catalyst preparation by mechanical milling or grinding, optionally
       combined with thermal treatment.
     slots:
-      - vessel_volume
-      - size_and_material
-      - milling_speed
-      - milling_duration
-      - ball_material
-      - ball_size
-      - ball_to_powder_ratio
+    - vessel_volume
+    - size_and_material
+    - milling_speed
+    - milling_duration
+    - ball_material
+    - ball_size
+    - ball_to_powder_ratio
 
   Sublimation:
     is_a: PreparationMethod
     class_uri: coremeta4cat:Sublimation
     mixins:
-      - ThermalSynthesisMixin
+    - ThermalSynthesisMixin
     description: |-
       Catalyst preparation by sublimation: a solid precursor is vaporised
       and deposited onto a substrate without passing through a liquid phase.
     slots:
-      - synthesis_pressure
+    - synthesis_pressure
 
   MolecularSynthesis:
     is_a: PreparationMethod
     class_uri: coremeta4cat:MolecularSynthesis
     mixins:
-      - DryingMixin
+    - DryingMixin
     description: |-
       Catalyst preparation by molecular (organometallic or coordination)
       chemistry routes, including crystallisation and purification steps.
     slots:
-      - reaction_vessel
-      - mixing_device
-      - has_stirring_duration
-      - has_stirring_speed
-      - has_mixing_temperature
-      - filtration_device
-      - filter_type
-      - crystallisation_solvents
-      - precipitation_agent
-      - crystallisation_duration
-      - purification_solvent
-      - number_of_cycles
-      - temperature_ramp
-      - has_atmosphere
+    - reaction_vessel
+    - mixing_device
+    - has_stirring_duration
+    - has_stirring_speed
+    - has_mixing_temperature
+    - filtration_device
+    - filter_type
+    - crystallisation_solvents
+    - precipitation_agent
+    - crystallisation_duration
+    - purification_solvent
+    - number_of_cycles
+    - temperature_ramp
+    - has_atmosphere
 
   ExsolutionSynthesis:
     is_a: PreparationMethod
     class_uri: coremeta4cat:ExsolutionSynthesis
     mixins:
-      - CalcinationMixin
+    - CalcinationMixin
     description: |-
       Catalyst preparation by exsolution: metal nanoparticles are grown on
       a perovskite oxide surface by reduction/oxidation cycling.
@@ -498,7 +497,7 @@ slots:
   precipitating_agent:
     description: Chemical agent used to induce precipitation (e.g. NaOH, NH3).
     range: ChemicalEntity
-    slot_uri: coremeta4cat:precipitating_agent
+    slot_uri: VOC4CAT:0008203
     multivalued: true
     inlined_as_list: true
 
