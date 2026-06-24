@@ -178,6 +178,8 @@ classes:
 
     slots:
     - testslot_5
+    - testslot_6
+    - testslot_7
   PlugFlowReactor:
     is_a: ChemicalReactor
     class_uri: VOC4CAT:0007102
@@ -359,5 +361,17 @@ slots:
   testslot_5:
     description: test_description_5
     slot_uri: VOC4CAT:test_uri_5
+    multivalued: true
+    inlined_as_list: true
+  testslot_6:
+    description: test_description_6
+    range: string
+    slot_uri: VOC4CAT:test_uri_6
+    multivalued: true
+    inlined_as_list: true
+  testslot_7:
+    description: test_description_7
+    range: float
+    slot_uri: VOC4CAT:test_uri_7
     multivalued: true
     inlined_as_list: true
