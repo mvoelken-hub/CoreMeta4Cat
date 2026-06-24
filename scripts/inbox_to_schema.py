@@ -86,6 +86,12 @@ PRIMITIVE_TYPES: frozenset[str] = frozenset({
     "date", "datetime", "time", "decimal", "double", "Any",
 })
 
+# The schema's default_range (coremeta4cat.yaml / coremeta4cat_common.yaml).
+# A slot with no explicit `range` key is equivalent to one with `range: string`,
+# so the two must be treated as equal when diffing against the Excel (which always
+# emits a range value via schema_to_excel).
+DEFAULT_RANGE = "string"
+
 # ─────────────────────────────────────────────────────────────────────────────
 # Diagnostic / reporting system
 # ─────────────────────────────────────────────────────────────────────────────
@@ -531,11 +537,11 @@ def plan_changes(
                             effective_class, slot_origin, class_origin,
                             changes, reporter,
                         )
-                    else:
-                        # Slot belongs to the subclass hierarchy (mixin,
-                        # attribute, or imported slot) and cannot be modified
-                        # via the inbox workflow.  Skip silently — these rows
-                        # are structural display information from the Excel
+                    elif derived_name in get_all_class_slots(schema, effective_class):
+                        # Slot already belongs to the subclass hierarchy (its own
+                        # slots: list or a mixin) and cannot be modified via the
+                        # inbox workflow.  Skip silently — these rows are
+                        # structural display information from the Excel
                         # generator, not editable fields.
                         reporter.info(
                             sheet_title, f"slot '{label}'",
@@ -543,13 +549,23 @@ def plan_changes(
                             f"and is not modifiable via the inbox workflow "
                             f"(edit the YAML directly).",
                         )
+                    else:
+                        # Unknown slot assigned to a domain class that does not
+                        # already define it → a genuinely new slot to be added to
+                        # that subclass (e.g. anode/cathode on ElectrochemicalReactor).
+                        # _plan_new_slot resolves the owner class from the domain.
+                        _plan_new_slot(
+                            row, sheet_title, schema_class,
+                            schema, class_origin, slot_origin, label_to_slot,
+                            label_to_class, changes, reporter,
+                        )
 
                 else:
                     # ── Unknown label + empty domain → new top-level slot ──
                     _plan_new_slot(
                         row, sheet_title, schema_class,
                         schema, class_origin, slot_origin, label_to_slot,
-                        changes, reporter,
+                        label_to_class, changes, reporter,
                     )
 
             elif row_type == "class":
@@ -689,7 +705,9 @@ def _plan_slot_changes(
     # -- range --
     new_range = row["range"]
     if new_range:
-        cur_range = _str(_effective(slot_def, su, "range", ""))
+        # An absent range key means the schema default (string); normalise so a
+        # default-range slot is not seen as "changing" to string on the next run.
+        cur_range = _str(_effective(slot_def, su, "range", "")) or DEFAULT_RANGE
         if new_range != cur_range:
             if not _valid_range(new_range, schema):
                 reporter.error(
@@ -778,6 +796,7 @@ def _plan_new_slot(
     class_origin: dict[str, Path],
     slot_origin: dict[str, Path],
     label_to_slot: dict[str, str],
+    label_to_class: dict[str, str],
     changes: list,
     reporter: Reporter,
 ) -> None:
@@ -785,16 +804,23 @@ def _plan_new_slot(
     domain    = row["domain"]
     slot_name = _label_to_slot_name(label)
 
-    # Only top-level new slots are supported (domain must be empty)
+    # Resolve the class that will own the new slot:
+    #   • empty domain     → the sheet's top-level data class (schema_class)
+    #   • non-empty domain → the named subclass (e.g. ElectrochemicalReactor),
+    #                        added to that class exactly like the top-level case.
     if domain:
-        reporter.error(
-            sheet, f"new slot '{label}'",
-            f"New slots may only be added at the top level of a data class "
-            f"(the **domain** column must be empty). Got domain=`{domain}`.",
-            hint="To add a slot inside a subclass, edit the YAML directly. "
-                 "For a top-level slot, leave the domain column empty.",
-        )
-        return
+        owner_class = label_to_class.get(domain) or domain
+        if owner_class not in schema.get("classes", {}):
+            reporter.error(
+                sheet, f"new slot '{label}'",
+                f"The domain `{domain}` is not a recognised class. "
+                f"Set the domain column to an existing class label, or leave it "
+                f"empty to add a top-level slot.",
+                hint="Look at the class rows in this sheet for valid domain names.",
+            )
+            return
+    else:
+        owner_class = schema_class
 
     # Name conflict: same derived name as an existing slot
     if slot_name in schema.get("slots", {}):
@@ -818,7 +844,7 @@ def _plan_new_slot(
         return
 
     # Range validation
-    range_val = row["range"] or "string"
+    range_val = row["range"] or DEFAULT_RANGE
     if not _valid_range(range_val, schema):
         reporter.error(
             sheet, f"new slot '{label}'",
@@ -827,16 +853,16 @@ def _plan_new_slot(
         )
         return
 
-    target = class_origin.get(schema_class, SCHEMA_DIR / MODULE_FILES[-1])
+    target = class_origin.get(owner_class, SCHEMA_DIR / MODULE_FILES[-1])
     reporter.info(
         sheet, f"new slot `{slot_name}`",
-        f"Will add `{slot_name}` to `{schema_class}`.",
+        f"Will add `{slot_name}` to `{owner_class}`.",
     )
     changes.append({
         "type":           "slot_add",
         "name":           slot_name,
         "label":          label,
-        "schema_class":   schema_class,
+        "schema_class":   owner_class,
         "range":          range_val,
         "mro":            mro,
         "description":    row["description"],
@@ -1171,7 +1197,7 @@ def apply_changes(changes: list[dict], reporter: Reporter) -> None:
             slot_def: dict[str, Any] = {}
             if ch["description"]:
                 slot_def["description"] = _as_literal(ch["description"])
-            if ch["range"] and ch["range"] != "string":
+            if ch["range"]:
                 slot_def["range"] = ch["range"]
             if ch["uri"]:
                 slot_def["slot_uri"] = ch["uri"]
@@ -1206,7 +1232,7 @@ def apply_changes(changes: list[dict], reporter: Reporter) -> None:
             _save_yaml(target, doc)
             reporter.applied(
                 f"New slot `{slot_name}` added to `{schema_class}` "
-                f"(M/R/O: {mro}, range: {ch['range'] or 'string'})"
+                f"(M/R/O: {mro}, range: {ch['range']})"
             )
 
         # ── add new class ─────────────────────────────────────────────────
