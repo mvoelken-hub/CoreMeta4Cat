@@ -531,11 +531,11 @@ def plan_changes(
                             effective_class, slot_origin, class_origin,
                             changes, reporter,
                         )
-                    else:
-                        # Slot belongs to the subclass hierarchy (mixin,
-                        # attribute, or imported slot) and cannot be modified
-                        # via the inbox workflow.  Skip silently — these rows
-                        # are structural display information from the Excel
+                    elif derived_name in get_all_class_slots(schema, effective_class):
+                        # Slot already belongs to the subclass hierarchy (its own
+                        # slots: list or a mixin) and cannot be modified via the
+                        # inbox workflow.  Skip silently — these rows are
+                        # structural display information from the Excel
                         # generator, not editable fields.
                         reporter.info(
                             sheet_title, f"slot '{label}'",
@@ -543,13 +543,23 @@ def plan_changes(
                             f"and is not modifiable via the inbox workflow "
                             f"(edit the YAML directly).",
                         )
+                    else:
+                        # Unknown slot assigned to a domain class that does not
+                        # already define it → a genuinely new slot to be added to
+                        # that subclass (e.g. anode/cathode on ElectrochemicalReactor).
+                        # _plan_new_slot resolves the owner class from the domain.
+                        _plan_new_slot(
+                            row, sheet_title, schema_class,
+                            schema, class_origin, slot_origin, label_to_slot,
+                            label_to_class, changes, reporter,
+                        )
 
                 else:
                     # ── Unknown label + empty domain → new top-level slot ──
                     _plan_new_slot(
                         row, sheet_title, schema_class,
                         schema, class_origin, slot_origin, label_to_slot,
-                        changes, reporter,
+                        label_to_class, changes, reporter,
                     )
 
             elif row_type == "class":
@@ -778,6 +788,7 @@ def _plan_new_slot(
     class_origin: dict[str, Path],
     slot_origin: dict[str, Path],
     label_to_slot: dict[str, str],
+    label_to_class: dict[str, str],
     changes: list,
     reporter: Reporter,
 ) -> None:
@@ -785,16 +796,23 @@ def _plan_new_slot(
     domain    = row["domain"]
     slot_name = _label_to_slot_name(label)
 
-    # Only top-level new slots are supported (domain must be empty)
+    # Resolve the class that will own the new slot:
+    #   • empty domain     → the sheet's top-level data class (schema_class)
+    #   • non-empty domain → the named subclass (e.g. ElectrochemicalReactor),
+    #                        added to that class exactly like the top-level case.
     if domain:
-        reporter.error(
-            sheet, f"new slot '{label}'",
-            f"New slots may only be added at the top level of a data class "
-            f"(the **domain** column must be empty). Got domain=`{domain}`.",
-            hint="To add a slot inside a subclass, edit the YAML directly. "
-                 "For a top-level slot, leave the domain column empty.",
-        )
-        return
+        owner_class = label_to_class.get(domain) or domain
+        if owner_class not in schema.get("classes", {}):
+            reporter.error(
+                sheet, f"new slot '{label}'",
+                f"The domain `{domain}` is not a recognised class. "
+                f"Set the domain column to an existing class label, or leave it "
+                f"empty to add a top-level slot.",
+                hint="Look at the class rows in this sheet for valid domain names.",
+            )
+            return
+    else:
+        owner_class = schema_class
 
     # Name conflict: same derived name as an existing slot
     if slot_name in schema.get("slots", {}):
@@ -827,16 +845,16 @@ def _plan_new_slot(
         )
         return
 
-    target = class_origin.get(schema_class, SCHEMA_DIR / MODULE_FILES[-1])
+    target = class_origin.get(owner_class, SCHEMA_DIR / MODULE_FILES[-1])
     reporter.info(
         sheet, f"new slot `{slot_name}`",
-        f"Will add `{slot_name}` to `{schema_class}`.",
+        f"Will add `{slot_name}` to `{owner_class}`.",
     )
     changes.append({
         "type":           "slot_add",
         "name":           slot_name,
         "label":          label,
-        "schema_class":   schema_class,
+        "schema_class":   owner_class,
         "range":          range_val,
         "mro":            mro,
         "description":    row["description"],
