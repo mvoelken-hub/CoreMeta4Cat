@@ -176,6 +176,8 @@ classes:
       Continuous stirred tank reactor (CSTR) — a well-mixed, continuous-flow
       reactor operating at steady state.
 
+    slots:
+    - testslot_5
   PlugFlowReactor:
     is_a: ChemicalReactor
     class_uri: VOC4CAT:0007102
@@ -190,6 +192,8 @@ classes:
       Autoclave reactor — a sealed pressure vessel for batch reactions at
       elevated temperature and/or pressure.
 
+    slots:
+    - testslot_4
   SlurryReactor:
     is_a: ChemicalReactor
     class_uri: coremeta4cat:SlurryReactor
@@ -197,6 +201,8 @@ classes:
       Slurry reactor — a three-phase reactor in which catalyst particles are
       suspended in a liquid phase through which gas is bubbled.
 
+    slots:
+    - testslot_3
   Microreactor:
     is_a: ChemicalReactor
     class_uri: VOC4CAT:0000234
@@ -205,6 +211,8 @@ classes:
       in the sub-millimetre range, enabling precise thermal control and rapid
       screening.
 
+    slots:
+    - testslot_1
   FixedBedReactor:
     is_a: ChemicalReactor
     class_uri: coremeta4cat:FixedBedReactor
@@ -212,6 +220,8 @@ classes:
       Fixed bed reactor — a tubular reactor packed with a stationary catalyst bed.
       The most common reactor type in heterogeneous catalysis testing.
 
+    slots:
+    - testslot_2
   FluidizedBedReactor:
     is_a: ChemicalReactor
     class_uri: coremeta4cat:FluidizedBedReactor
@@ -323,7 +333,31 @@ slots:
     description: The electrode where oxidation occurs in an electrochemical cell. It is the positive electrode in an electrolytic cell, while it is the negative electrode in a galvanic cell.
     slot_uri: VOC4CAT:0007254
     required: true
+    range: string
   cathode:
     description: The electrode where reduction occurs in an electrochemical cell. It is the negative electrode in an electrolytic cell, while it is the positive electrode in a galvanic cell.
     slot_uri: VOC4CAT:0007255
     required: true
+    range: string
+  testslot_1:
+    description: test_description_1
+    slot_uri: VOC4CAT:test_uri_1
+    recommended: true
+    multivalued: true
+    inlined_as_list: true
+  testslot_2:
+    description: test_description_2
+    slot_uri: VOC4CAT:test_uri_2
+  testslot_3:
+    description: test_description_3
+    slot_uri: VOC4CAT:test_uri_3
+    recommended: true
+  testslot_4:
+    description: test_description_4
+    slot_uri: VOC4CAT:test_uri_4
+    required: true
+  testslot_5:
+    description: test_description_5
+    slot_uri: VOC4CAT:test_uri_5
+    multivalued: true
+    inlined_as_list: true
