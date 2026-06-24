@@ -221,3 +221,64 @@ def test_apply_writes_new_domain_slot_into_subclass(tmp_path, monkeypatch):
     # (b) the subclass references the new slot in its slots: list
     er = (doc.get("classes") or {}).get("ElectrochemicalReactor") or {}
     assert "test_electrode" in (er.get("slots") or [])
+
+
+def test_new_string_slot_writes_range_and_second_run_is_noop(tmp_path, monkeypatch):
+    """A new slot with the default ``string`` range gets ``range: string`` written on
+    the first run, and re-applying the same workbook row is a no-op.
+
+    Regression test for the idempotency bug where a new string-range slot was created
+    without a ``range`` key, so the next run -- with the regenerated Excel, which
+    always emits ``string`` -- saw a phantom "range changed -> string" and appended
+    ``range: string`` only on the second pass (as happened to anode / cathode).
+    """
+    dst = tmp_path / "schema"
+    dst.mkdir()
+    for f in _SCHEMA.glob("*.yaml"):
+        shutil.copy(f, dst / f.name)
+    monkeypatch.setattr(ib, "SCHEMA_DIR", dst)
+
+    label = "qa idempotent string field"
+    name  = "qa_idempotent_string_field"
+    excel = {"Reaction": [_slot_row(label, domain="", mro="R", range_="string")]}
+
+    # ── First run: create the slot ──────────────────────────────────────────
+    reporter1 = ib.Reporter()
+    schema1 = load_merged_schema(str(dst))
+    slot_origin1, class_origin1 = ib.build_origin_index(dst)
+    label_to_slot1, label_to_class1 = ib.build_label_index(schema1)
+
+    assert name not in schema1.get("slots", {})
+
+    changes1 = ib.plan_changes(
+        schema1, excel, label_to_slot1, label_to_class1,
+        slot_origin1, class_origin1, reporter1,
+    )
+    # Apply only our slot_add so single-row deletion-detection does not mutate the copy.
+    adds = [c for c in changes1 if c["type"] == "slot_add" and c["name"] == name]
+    assert len(adds) == 1
+    ib.apply_changes(adds, reporter1)
+
+    # range: string is written explicitly on the first run (fix #2).
+    doc = ib._load_yaml(dst / "coremeta4cat_reaction_ap.yaml")
+    assert doc["slots"][name].get("range") == "string"
+
+    # ── Second run: same row, against the freshly reloaded schema ───────────
+    reporter2 = ib.Reporter()
+    schema2 = load_merged_schema(str(dst))
+    slot_origin2, class_origin2 = ib.build_origin_index(dst)
+    label_to_slot2, label_to_class2 = ib.build_label_index(schema2)
+
+    # The slot is now known, so it routes through the modify path, not slot_add.
+    assert label in label_to_slot2
+
+    changes2 = ib.plan_changes(
+        schema2, excel, label_to_slot2, label_to_class2,
+        slot_origin2, class_origin2, reporter2,
+    )
+
+    # No phantom change (range or otherwise) for our slot on the second run.
+    slot_changes = [c for c in changes2 if c.get("name") == name]
+    assert not slot_changes, (
+        f"second run was not idempotent for '{name}': {slot_changes}"
+    )

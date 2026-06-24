@@ -582,6 +582,7 @@ classes:
 #   has_energy_range, has_temperature_range, has_mz_range,
 #   has_two_theta_range, has_wavenumber_range
 
+    - test_slot_01
 slots:
 
   # ---- Characterization-level slots ----
@@ -1278,3 +1279,11 @@ slots:
     range: string
     slot_uri: coremeta4cat:ionization_mode
     multivalued: true
+  test_slot_01:
+    description: test_slot_01
+    slot_uri: VOC4CAT:test_slot_01
+    required: true
+    multivalued: true
+    inlined_as_list: true
+    unit:
+      ucum_code: min
