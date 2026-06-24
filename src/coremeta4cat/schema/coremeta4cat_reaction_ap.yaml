@@ -166,9 +166,6 @@ classes:
       Electrochemical reactor used in electrocatalytic experiments, including
       H-cells, flow cells, and membrane electrode assemblies.
 
-    slots:
-    - anode
-    - cathode
   CSTR:
     is_a: ChemicalReactor
     class_uri: VOC4CAT:0007019
@@ -319,11 +316,3 @@ slots:
     required: true
     multivalued: true
     inlined_as_list: true
-  anode:
-    description: The electrode where oxidation occurs in an electrochemical cell. It is the positive electrode in an electrolytic cell, while it is the negative electrode in a galvanic cell.
-    slot_uri: VOC4CAT:0007254
-    required: true
-  cathode:
-    description: The electrode where reduction occurs in an electrochemical cell. It is the negative electrode in an electrolytic cell, while it is the positive electrode in a galvanic cell.
-    slot_uri: VOC4CAT:0007255
-    required: true
