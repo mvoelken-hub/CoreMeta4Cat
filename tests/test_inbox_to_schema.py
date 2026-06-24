@@ -89,14 +89,32 @@ def indexes():
 
 def test_new_slot_with_domain_is_planned_for_subclass(indexes):
     """A new slot assigned to an existing subclass is planned as a slot_add
-    targeting that subclass and the YAML module that defines it."""
+    targeting that subclass and the YAML module that defines it.
+
+    Uses a synthetic slot name that is never shipped in the schema, so the test
+    stays valid even after real domain slots (e.g. anode/cathode) have been
+    applied via the pipeline. A hard-coded real name would stop being "new" once
+    it lands in the schema and would silently invalidate the assertion.
+    """
+    schema        = indexes[0]
+    label_to_slot = indexes[3]
+
+    label = "qa synthetic electrode probe"
+    name  = "qa_synthetic_electrode_probe"
+
+    # Precondition: the slot must genuinely be absent for this test to be
+    # meaningful. Asserting it makes the assumption explicit and self-checking.
+    assert name not in schema.get("slots", {})
+    assert label not in label_to_slot
+    assert name not in ib.get_all_class_slots(schema, "ElectrochemicalReactor")
+
     excel = {"Reaction": [
-        _slot_row("anode", domain="ElectrochemicalReactor", mro="M"),
+        _slot_row(label, domain="ElectrochemicalReactor", mro="M"),
     ]}
     changes, reporter = _plan(indexes, excel)
 
-    adds = [c for c in changes if c["type"] == "slot_add" and c["name"] == "anode"]
-    assert len(adds) == 1, "expected exactly one slot_add for 'anode'"
+    adds = [c for c in changes if c["type"] == "slot_add" and c["name"] == name]
+    assert len(adds) == 1, f"expected exactly one slot_add for '{name}'"
     add = adds[0]
     assert add["schema_class"] == "ElectrochemicalReactor"
     assert add["mro"] == "M"
