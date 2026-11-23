@@ -993,6 +993,10 @@
          <lastmod>2026-11-23</lastmod>
     </url>
     <url>
+         <loc>https://nfdi4cat.github.io/CoreMeta4Cat/latest/elements/slots/acquisition_nucleus/</loc>
+         <lastmod>2026-11-23</lastmod>
+    </url>
+    <url>
          <loc>https://nfdi4cat.github.io/CoreMeta4Cat/latest/elements/slots/activation_energy/</loc>
          <lastmod>2026-11-23</lastmod>
     </url>
@@ -2206,10 +2210,6 @@
     </url>
     <url>
          <loc>https://nfdi4cat.github.io/CoreMeta4Cat/latest/elements/slots/notation/</loc>
-         <lastmod>2026-11-23</lastmod>
-    </url>
-    <url>
-         <loc>https://nfdi4cat.github.io/CoreMeta4Cat/latest/elements/slots/nucleus/</loc>
          <lastmod>2026-11-23</lastmod>
     </url>
     <url>

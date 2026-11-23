@@ -452,6 +452,8 @@
       CharacterizationTechnique &lt;|-- NMRSpectroscopy
         click CharacterizationTechnique href "../../classes/CharacterizationTechnique/"
 
+      NMRSpectroscopy : acquisition_nucleus
+
       NMRSpectroscopy : description
 
       NMRSpectroscopy : has_atmosphere
@@ -483,8 +485,6 @@
       NMRSpectroscopy : nmr_pulse_sequence
 
       NMRSpectroscopy : nmr_sample_tube
-
-      NMRSpectroscopy : nucleus
 
       NMRSpectroscopy : number_of_scans
 
@@ -564,7 +564,7 @@
 </thead>
 <tbody>
 <tr>
-<td><a href="../../slots/nucleus/">nucleus</a></td>
+<td><a href="../../slots/acquisition_nucleus/">acquisition_nucleus</a></td>
 <td>1..* <em>recommended</em> <br/> <a href="../../types/String/">String</a></td>
 <td>NMR-active nucleus observed (e.g. 1H, 13C, 31P).</td>
 <td>direct</td>
@@ -682,7 +682,7 @@
 <span class="nt">from_schema</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">https://w3id.org/nfdi4cat/coremeta4cat</span>
 <span class="nt">is_a</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">CharacterizationTechnique</span>
 <span class="nt">slots</span><span class="p">:</span>
-<span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">nucleus</span>
+<span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">acquisition_nucleus</span>
 <span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">solvent</span>
 <span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">irradiation_frequency</span>
 <span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">has_temperature</span>
@@ -706,8 +706,8 @@
 <span class="nt">from_schema</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">https://w3id.org/nfdi4cat/coremeta4cat</span>
 <span class="nt">is_a</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">CharacterizationTechnique</span>
 <span class="nt">attributes</span><span class="p">:</span>
-<span class="w">  </span><span class="nt">nucleus</span><span class="p">:</span>
-<span class="w">    </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">nucleus</span>
+<span class="w">  </span><span class="nt">acquisition_nucleus</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">acquisition_nucleus</span>
 <span class="w">    </span><span class="nt">description</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">NMR-active nucleus observed (e.g. 1H, 13C, 31P).</span>
 <span class="w">    </span><span class="nt">from_schema</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">https://w3id.org/nfdi4cat/coremeta4cat</span>
 <span class="w">    </span><span class="nt">rank</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">1000</span>
