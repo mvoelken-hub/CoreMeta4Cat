@@ -9,25 +9,28 @@ description: "The CoreMeta4Cat describes the minimum information which must be r
   \ terms \u2014 analogous to how NMRSpectroscopy uses\n  rdf_type: CHMO:0000613 to\
   \ classify the measurement type.\n\n- The four CoreMeta4Cat pillars are modelled\
   \ as DCAT-AP-PLUS Activity subclasses,\n  following the same pattern as NMRSpectroscopy\
-  \ (is_a: DataGeneratingActivity).\n  Synthesis, Characterization, and Simulation\
-  \ specialize CatalysisDataGeneratingActivity\n  (is_a: DataGeneratingActivity) rather\
-  \ than DataGeneratingActivity directly -- this\n  coremeta4cat-owned intermediate\
-  \ adds a type designator (activity_designator) so that\n  was_generated_by (typed\
-  \ CatalysisDataGeneratingActivity) can hold any of the three and\n  still resolve\
-  \ to the right concrete Python class when loaded. Likewise, is_about_activity\n\
-  \  is typed CatalyticReaction directly (not the wider EvaluatedActivity) so it needs\
-  \ no\n  designator at all:\n\n    Synthesis      --> is_a: CatalysisDataGeneratingActivity\n\
-  \                     Produces a catalyst (MaterialSample) as had_output_entity.\n\
-  \                     The PreparationMethod (protocol) is linked via realized_plan.\n\
-  \n    Characterization --> is_a: CatalysisDataGeneratingActivity\n             \
-  \          Produces measurement data about a catalyst or reaction.\n           \
-  \            The catalyst/sample is the evaluated_entity.\n                    \
-  \   The CharacterizationTechnique is linked via realized_plan.\n\n    Reaction \
-  \      --> is_a: CatalyticReaction (via ChemicalReaction, EvaluatedActivity)\n \
-  \                    The catalytic process being studied, NOT a data-generating\n\
-  \                     activity itself. Characterization datasets are about this.\n\
-  \                     Analogous to the reaction being observed in a reaction\n \
-  \                    monitoring dataset.\n\n    Simulation     --> is_a: CatalysisDataGeneratingActivity\n\
+  \ (is_a: DataGeneratingActivity).\n  Each pillar has an ontology term as its class_uri,\
+  \ as chem-dcat-ap does for\n  SubstanceSample (SIO:001378) or ChemicalEntity (CHEBI:23367),\
+  \ so the RDF of\n  every activity says what kind of activity it is.\n\n  CatalysisDataset\
+  \ describes the three data-generating pillars in one slot\n  each: was_generated_by_synthesis,\
+  \ was_generated_by_characterization and\n  was_generated_by_simulation. All three\
+  \ are prov:wasGeneratedBy in RDF, and\n  the range of each slot tells software which\
+  \ class its entries are, so no\n  type designator is needed. was_generated_by itself,\
+  \ which DCAT-AP-PLUS\n  requires on every Dataset, lists the ids of all these activities.\n\
+  \  is_about_activity is typed CatalyticReaction directly (not the wider\n  EvaluatedActivity),\
+  \ so it needs no designator either:\n\n    Synthesis      --> is_a: DataGeneratingActivity,\
+  \ class_uri PROCO:0000001\n                     Produces a catalyst (MaterialSample)\
+  \ as had_output_entity.\n                     The PreparationMethod (protocol) is\
+  \ linked via realized_plan.\n\n    Characterization --> is_a: DataGeneratingActivity,\
+  \ class_uri OBI:0000070\n                       Produces measurement data about\
+  \ a catalyst or reaction.\n                       The catalyst/sample is the evaluated_entity.\n\
+  \                       The CharacterizationTechnique is linked via realized_plan.\n\
+  \n    Reaction       --> CatalyticReaction (is_a: ChemicalReaction, EvaluatedActivity),\n\
+  \                     class_uri REX:0000051\n                     The catalytic\
+  \ process being studied, NOT a data-generating\n                     activity itself.\
+  \ Characterization datasets are about this.\n                     Analogous to the\
+  \ reaction being observed in a reaction\n                     monitoring dataset.\n\
+  \n    Simulation     --> is_a: DataGeneratingActivity, class_uri PROCO:0000159\n\
   \                     Generates computational data about a catalyst or reaction.\n\
   \                     The SimulationMethod (protocol) is linked via realized_plan.\n\
   \                     The simulation software is carried_out_by: Software.\n\n-\
@@ -110,6 +113,9 @@ prefixes:
   enm:
     prefix_prefix: enm
     prefix_reference: http://purl.enanomapper.org/onto/
+  panet:
+    prefix_prefix: panet
+    prefix_reference: http://purl.org/pan-science/PaNET/
   CHEBI:
     prefix_prefix: CHEBI
     prefix_reference: http://purl.obolibrary.org/obo/CHEBI_
@@ -119,6 +125,12 @@ prefixes:
   RXNO:
     prefix_prefix: RXNO
     prefix_reference: http://purl.obolibrary.org/obo/RXNO_
+  PROCO:
+    prefix_prefix: PROCO
+    prefix_reference: http://purl.obolibrary.org/obo/PROCO_
+  REX:
+    prefix_prefix: REX
+    prefix_reference: http://purl.obolibrary.org/obo/REX_
   qudt:
     prefix_prefix: qudt
     prefix_reference: http://qudt.org/schema/qudt/
@@ -137,6 +149,36 @@ prefixes:
   hdl:
     prefix_prefix: hdl
     prefix_reference: https://hdl.handle.net/
+  allotrope.result:
+    prefix_prefix: allotrope.result
+    prefix_reference: http://purl.allotrope.org/ontologies/result#AFR_
+  allotrope.process:
+    prefix_prefix: allotrope.process
+    prefix_reference: http://purl.allotrope.org/ontologies/process#AFP_
+  allotrope.quality:
+    prefix_prefix: allotrope.quality
+    prefix_reference: http://purl.allotrope.org/ontologies/quality#AFQ_
+  allotrope.role:
+    prefix_prefix: allotrope.role
+    prefix_reference: http://purl.allotrope.org/ontologies/role#AFRL_
+  COB:
+    prefix_prefix: COB
+    prefix_reference: http://purl.obolibrary.org/obo/COB_
+  dcatap:
+    prefix_prefix: dcatap
+    prefix_reference: http://data.europa.eu/r5r/
+  eli:
+    prefix_prefix: eli
+    prefix_reference: http://data.europa.eu/eli/ontology#
+  locn:
+    prefix_prefix: locn
+    prefix_reference: http://www.w3.org/ns/locn#
+  odrl:
+    prefix_prefix: odrl
+    prefix_reference: http://www.w3.org/ns/odrl/2/
+  spdx:
+    prefix_prefix: spdx
+    prefix_reference: http://spdx.org/rdf/terms#
 default_prefix: coremeta4cat
 default_range: string
 subsets:
@@ -761,6 +803,75 @@ enums:
           electricity, often found in high-energy environments such as stars or lightning.
         meaning: PATO:0015012
 slots:
+  was_generated_by_synthesis:
+    name: was_generated_by_synthesis
+    definition_uri: https://w3id.org/nfdi4cat/coremeta4cat/was_generated_by_synthesis
+    description: 'The Synthesis activities (catalyst preparations) that produced data
+      in
+
+      this dataset, each described in full. List their ids in was_generated_by
+
+      as well. In RDF: prov:wasGeneratedBy, with the activity typed
+
+      PROCO:0000001 (synthetic chemical process).'
+    from_schema: https://w3id.org/nfdi4cat/coremeta4cat
+    mappings:
+    - prov:wasGeneratedBy
+    is_a: was_generated_by
+    slot_uri: prov:wasGeneratedBy
+    owner: CatalysisDataset
+    domain_of:
+    - CatalysisDataset
+    range: Synthesis
+    multivalued: true
+    inlined: true
+    inlined_as_list: true
+  was_generated_by_characterization:
+    name: was_generated_by_characterization
+    definition_uri: https://w3id.org/nfdi4cat/coremeta4cat/was_generated_by_characterization
+    description: 'The Characterization activities (measurements of a catalyst, material
+      or
+
+      reaction) that produced data in this dataset, each described in full.
+
+      List their ids in was_generated_by as well. In RDF: prov:wasGeneratedBy,
+
+      with the activity typed OBI:0000070 (assay).'
+    from_schema: https://w3id.org/nfdi4cat/coremeta4cat
+    mappings:
+    - prov:wasGeneratedBy
+    is_a: was_generated_by
+    slot_uri: prov:wasGeneratedBy
+    owner: CatalysisDataset
+    domain_of:
+    - CatalysisDataset
+    range: Characterization
+    multivalued: true
+    inlined: true
+    inlined_as_list: true
+  was_generated_by_simulation:
+    name: was_generated_by_simulation
+    definition_uri: https://w3id.org/nfdi4cat/coremeta4cat/was_generated_by_simulation
+    description: 'The Simulation activities (computational studies) that produced
+      data in
+
+      this dataset, each described in full. List their ids in was_generated_by
+
+      as well. In RDF: prov:wasGeneratedBy, with the activity typed
+
+      PROCO:0000159 (in-silico modeling).'
+    from_schema: https://w3id.org/nfdi4cat/coremeta4cat
+    mappings:
+    - prov:wasGeneratedBy
+    is_a: was_generated_by
+    slot_uri: prov:wasGeneratedBy
+    owner: CatalysisDataset
+    domain_of:
+    - CatalysisDataset
+    range: Simulation
+    multivalued: true
+    inlined: true
+    inlined_as_list: true
   adsorbate:
     name: adsorbate
     definition_uri: https://w3id.org/nfdi4cat/coremeta4cat/adsorbate
@@ -1200,27 +1311,54 @@ slots:
     - CatalyticDescriptors
     range: string
     multivalued: true
-  activity_designator:
-    name: activity_designator
-    definition_uri: https://w3id.org/nfdi4cat/coremeta4cat/activity_designator
-    description: 'Internal type designator for CatalysisDataGeneratingActivity subclasses
+  plan_designator:
+    name: plan_designator
+    definition_uri: https://w3id.org/nfdi4cat/coremeta4cat/plan_designator
+    description: 'Type designator for CatalysisPlan subclasses: the class_uri of the
+      concrete
 
-      (Synthesis, Characterization, Simulation). Only needs to be set by hand
+      PreparationMethod, CharacterizationTechnique or SimulationMethod a plan is,
 
-      when nesting one of these inside another object''s was_generated_by list
+      e.g. voc4cat:0007795 (CoPrecipitation), CHMO:0002908 (TPR),
 
-      (e.g. in a combined CatalysisDataset file) -- LinkML fills it in
+      coremeta4cat:DFT. Needed whenever a plan uses fields of its subclass:
 
-      automatically when a class is instantiated directly.'
+      realized_plan ranges over the abstract parent, and without the designator
+
+      the Python datamodel rejects subclass-specific fields. The value must match
+
+      the class_uri exactly, including the prefix spelling (voc4cat, not
+
+      VOC4CAT). In RDF it becomes the plan''s rdf:type.'
     from_schema: https://w3id.org/nfdi4cat/coremeta4cat/common/
     mappings:
     - rdf:type
     slot_uri: rdf:type
     designates_type: true
-    owner: CatalysisDataGeneratingActivity
+    owner: CatalysisPlan
     domain_of:
-    - CatalysisDataGeneratingActivity
-    range: string
+    - CatalysisPlan
+    range: uriorcurie
+  reactor_designator:
+    name: reactor_designator
+    definition_uri: https://w3id.org/nfdi4cat/coremeta4cat/reactor_designator
+    description: 'Type designator for ChemicalReactor subclasses: the class_uri of
+      the
+
+      concrete reactor, e.g. coremeta4cat:FixedBedReactor or NCIT:C93052
+
+      (Autoclave). Needed whenever a reactor uses fields of its subclass; same
+
+      rules as plan_designator.'
+    from_schema: https://w3id.org/nfdi4cat/coremeta4cat/common/
+    mappings:
+    - rdf:type
+    slot_uri: rdf:type
+    designates_type: true
+    owner: ChemicalReactor
+    domain_of:
+    - ChemicalReactor
+    range: uriorcurie
   has_flow_rate:
     name: has_flow_rate
     definition_uri: https://w3id.org/nfdi4cat/coremeta4cat/has_flow_rate
@@ -1523,9 +1661,9 @@ slots:
     description: Total duration of the experiment or measurement run.
     from_schema: https://w3id.org/nfdi4cat/coremeta4cat/common/
     mappings:
-    - SIO:000008
+    - voc4cat:0000111
     is_a: has_duration
-    slot_uri: SIO:000008
+    slot_uri: voc4cat:0000111
     owner: CatalyticReaction
     domain_of:
     - PowderXRD
@@ -4587,15 +4725,15 @@ slots:
     recommended: true
     multivalued: true
     inlined_as_list: true
-  catalyst_quantity:
-    name: catalyst_quantity
-    definition_uri: https://w3id.org/nfdi4cat/coremeta4cat/catalyst_quantity
+  catalyst_mass:
+    name: catalyst_mass
+    definition_uri: https://w3id.org/nfdi4cat/coremeta4cat/catalyst_mass
     description: Mass of catalyst loaded into the reactor.
     from_schema: https://w3id.org/nfdi4cat/coremeta4cat/reaction/
     mappings:
-    - coremeta4cat:catalyst_quantity
+    - voc4cat:0008141
     is_a: has_mass
-    slot_uri: coremeta4cat:catalyst_quantity
+    slot_uri: voc4cat:0008141
     owner: CatalyticReaction
     domain_of:
     - CatalyticReaction
@@ -4663,7 +4801,9 @@ slots:
 
       from catalyst_type (the catalytic regime).'
     from_schema: https://w3id.org/nfdi4cat/coremeta4cat/reaction/
-    slot_uri: coremeta4cat:catalyst_form
+    mappings:
+    - voc4cat:0000016
+    slot_uri: voc4cat:0000016
     owner: CatalyticReaction
     domain_of:
     - CatalyticReaction
@@ -4855,9 +4995,10 @@ slots:
     - voc4cat:0008114
     is_a: has_angular_velocity
     slot_uri: voc4cat:0008114
-    owner: CSTR
+    owner: Autoclave
     domain_of:
     - CSTR
+    - Autoclave
     range: AngularVelocity
     recommended: true
     multivalued: true
@@ -4890,9 +5031,10 @@ slots:
     - voc4cat:0000153
     is_a: has_volume
     slot_uri: voc4cat:0000153
-    owner: CSTR
+    owner: Autoclave
     domain_of:
     - CSTR
+    - Autoclave
     range: Volume
     recommended: true
     multivalued: true
@@ -4926,9 +5068,10 @@ slots:
     - voc4cat:0008115
     is_a: has_length
     slot_uri: voc4cat:0008115
-    owner: CSTR
+    owner: Autoclave
     domain_of:
     - CSTR
+    - Autoclave
     range: LengthQuantity
     recommended: true
     multivalued: true
@@ -4952,9 +5095,10 @@ slots:
     - voc4cat:0008113
     is_a: has_qualitative_attribute
     slot_uri: voc4cat:0008113
-    owner: CSTR
+    owner: Autoclave
     domain_of:
     - CSTR
+    - Autoclave
     range: string
     recommended: true
     multivalued: true
@@ -5055,15 +5199,17 @@ slots:
     multivalued: true
     inlined: true
     inlined_as_list: true
-  agitation_type:
-    name: agitation_type
-    definition_uri: https://w3id.org/nfdi4cat/coremeta4cat/agitation_type
-    description: 'The category of agitation used inside the autoclave (e.g. magnetic
+  reaction_chamber_shape:
+    name: reaction_chamber_shape
+    definition_uri: https://w3id.org/nfdi4cat/coremeta4cat/reaction_chamber_shape
+    description: 'The shape of the reaction chamber (e.g. cylindrical, cubical,
 
-      stirring, mechanical overhead stirring, rocking, none).'
+      rectangular).'
     from_schema: https://w3id.org/nfdi4cat/coremeta4cat/reaction/
+    mappings:
+    - voc4cat:0000155
     is_a: has_qualitative_attribute
-    slot_uri: coremeta4cat:agitation_type
+    slot_uri: voc4cat:0000155
     owner: Autoclave
     domain_of:
     - Autoclave
@@ -5090,21 +5236,6 @@ slots:
     range: string
     recommended: true
     multivalued: true
-    inlined_as_list: true
-  vessel_internal_volume:
-    name: vessel_internal_volume
-    definition_uri: https://w3id.org/nfdi4cat/coremeta4cat/vessel_internal_volume
-    description: The internal (working) volume of the autoclave vessel.
-    from_schema: https://w3id.org/nfdi4cat/coremeta4cat/reaction/
-    is_a: has_volume
-    slot_uri: coremeta4cat:vessel_internal_volume
-    owner: Autoclave
-    domain_of:
-    - Autoclave
-    range: Volume
-    recommended: true
-    multivalued: true
-    inlined: true
     inlined_as_list: true
   vessel_material:
     name: vessel_material
@@ -5387,14 +5518,14 @@ slots:
       The abstract stub ProductIdentificationMethod is retained for backward compatibility.'
     from_schema: https://w3id.org/nfdi4cat/coremeta4cat/reaction/
     mappings:
-    - coremeta4cat:product_identification_method
+    - voc4cat:0000129
     is_a: realized_plan
-    slot_uri: coremeta4cat:product_identification_method
+    slot_uri: voc4cat:0000129
     owner: CatalyticReaction
     domain_of:
     - CatalyticReaction
     range: ProductIdentificationMethod
-    required: true
+    recommended: true
     multivalued: true
     inlined: true
     inlined_as_list: true
@@ -5433,11 +5564,36 @@ slots:
     domain_of:
     - Simulation
     range: CalculatedProperty
-    required: true
     recommended: true
     multivalued: true
     inlined: true
     inlined_as_list: true
+  property_designator:
+    name: property_designator
+    definition_uri: https://w3id.org/nfdi4cat/coremeta4cat/property_designator
+    description: 'Type designator for CalculatedProperty subclasses: the class_uri
+      of the
+
+      concrete property an entry of calculated_property is, e.g.
+
+      coremeta4cat:AdsorptionEnergetics or coremeta4cat:TransitionState.
+
+      Needed whenever an entry uses fields of its subclass: calculated_property
+
+      ranges over the abstract CalculatedProperty, and without the designator
+
+      software cannot tell which property class an entry belongs to. The value
+
+      must match the class_uri exactly. In RDF it becomes the entry''s rdf:type.'
+    from_schema: https://w3id.org/nfdi4cat/coremeta4cat/simulation/
+    mappings:
+    - rdf:type
+    slot_uri: rdf:type
+    designates_type: true
+    owner: CalculatedProperty
+    domain_of:
+    - CalculatedProperty
+    range: uriorcurie
   exchange_correlation_functional:
     name: exchange_correlation_functional
     definition_uri: https://w3id.org/nfdi4cat/coremeta4cat/exchange_correlation_functional
@@ -8986,11 +9142,15 @@ slots:
   CatalysisDataset_rdf_type:
     name: CatalysisDataset_rdf_type
     definition_uri: https://w3id.org/nfdi-de/dcat-ap-plus/rdf_type
-    description: 'The catalysis research field, provided as a voc4cat term from
+    description: 'The catalysis research field(s), provided as voc4cat terms from
 
       CatalysisResearchFieldEnum. This is the primary machine-actionable
 
-      classification of the dataset''s domain.'
+      classification of the dataset''s domain (Layer 1) and is mandatory.
+
+      Several fields can be given for interdisciplinary work, e.g.
+
+      biocatalysis and electrocatalysis for bioelectrocatalysis.'
     in_subset:
     - domain_agnostic_core
     from_schema: https://w3id.org/nfdi-de/dcat-ap-plus
@@ -9008,18 +9168,28 @@ slots:
     range: DefinedTerm
     bindings:
     - range: CatalysisResearchFieldEnum
-      obligation_level: RECOMMENDED
+      obligation_level: REQUIRED
       binds_value_of: id
-      description: Classify the dataset by catalysis research field using voc4cat.
+      description: Classify the dataset by catalysis research field(s) using voc4cat.
+    required: true
     recommended: true
+    multivalued: true
     inlined: true
-    inlined_as_list: false
+    inlined_as_list: true
   CatalysisDataset_was_generated_by:
     name: CatalysisDataset_was_generated_by
     definition_uri: https://w3id.org/nfdi-de/dcat-ap-plus/was_generated_by
-    description: 'The DataGeneratingActivity (Synthesis, Characterization, or Simulation)
+    description: 'The ids of all activities that produced this dataset''s data, e.g.
 
-      that produced this dataset.'
+      [coremeta4cat:SYN_1, coremeta4cat:CHAR_1]. Describe each activity in
+
+      full in was_generated_by_synthesis, was_generated_by_characterization
+
+      or was_generated_by_simulation, under the same id. DCAT-AP-PLUS
+
+      requires this slot on every Dataset; in RDF both lists become the
+
+      same prov:wasGeneratedBy links.'
     from_schema: https://w3id.org/nfdi-de/dcat-ap-plus
     mappings:
     - prov:wasGeneratedBy
@@ -9032,11 +9202,11 @@ slots:
     - CatalysisDataset
     is_usage_slot: true
     usage_slot_name: was_generated_by
-    range: CatalysisDataGeneratingActivity
-    recommended: true
+    range: DataGeneratingActivity
+    required: true
     multivalued: true
-    inlined: true
-    inlined_as_list: true
+    inlined: false
+    inlined_as_list: false
   CatalysisDataset_is_about_activity:
     name: CatalysisDataset_is_about_activity
     definition_uri: https://w3id.org/nfdi-de/dcat-ap-plus/is_about_activity
@@ -9269,7 +9439,6 @@ slots:
     is_usage_slot: true
     usage_slot_name: precursor_quantity
     range: Mass
-    required: true
     recommended: true
     multivalued: true
     inlined: true
@@ -9398,9 +9567,15 @@ slots:
   CatalyticReaction_rdf_type:
     name: CatalyticReaction_rdf_type
     definition_uri: https://w3id.org/nfdi-de/dcat-ap-plus/rdf_type
-    description: 'The type of catalytic reaction as an ontology term (e.g. voc4cat:0007010
+    description: 'The type of catalytic reaction as an ontology term, e.g. voc4cat:0000259
 
-      for a specific reaction type, or a ChemO/RXNO term).
+      (CO2 hydrogenation), or a term from RXNO, CHMO or SIO. Mandatory for
+
+      every reaction (Layer 1). If no specific term exists, use the closest
+
+      broader one (e.g. voc4cat:0000260, hydrogenation, for CO methanation)
+
+      and keep the specific name in reaction_name.
 
 
       This is the sole reaction-type classification mechanism (DCAT-AP-PLUS
@@ -9409,13 +9584,9 @@ slots:
 
       slot + ReactionType class hierarchy (cf. PR #118, since superseded here).
 
-      Kept `recommended` rather than `required` for the same reason as
+      See nfdi4cat/CoreMeta4Cat#117 for the cardinality discussion and
 
-      catalyst_type below: see nfdi4cat/CoreMeta4Cat#117 for the cardinality
-
-      discussion and nfdi4cat/CoreMeta4Cat#116 for the classification-mechanism
-
-      discussion.'
+      nfdi4cat/CoreMeta4Cat#116 for the classification-mechanism discussion.'
     in_subset:
     - domain_agnostic_core
     from_schema: https://w3id.org/nfdi-de/dcat-ap-plus
@@ -9431,6 +9602,7 @@ slots:
     is_usage_slot: true
     usage_slot_name: rdf_type
     range: DefinedTerm
+    required: true
     recommended: true
     inlined: true
     inlined_as_list: false
@@ -9471,10 +9643,10 @@ slots:
       The abstract stub ProductIdentificationMethod is retained for backward compatibility.'
     from_schema: https://w3id.org/nfdi4cat/coremeta4cat/reaction/
     mappings:
-    - coremeta4cat:product_identification_method
+    - voc4cat:0000129
     is_a: product_identification_method
     domain: CatalyticReaction
-    slot_uri: coremeta4cat:product_identification_method
+    slot_uri: voc4cat:0000129
     alias: product_identification_method
     owner: CatalyticReaction
     domain_of:
@@ -9482,7 +9654,7 @@ slots:
     is_usage_slot: true
     usage_slot_name: product_identification_method
     range: ProductIdentificationMethod
-    required: true
+    recommended: true
     multivalued: true
     inlined: true
     inlined_as_list: true
@@ -9509,6 +9681,31 @@ slots:
     is_usage_slot: true
     usage_slot_name: has_reaction_step
     range: CatalyticReaction
+    multivalued: true
+    inlined: true
+    inlined_as_list: true
+  Autoclave_stirrer_diameter:
+    name: Autoclave_stirrer_diameter
+    definition_uri: https://w3id.org/nfdi4cat/coremeta4cat/stirrer_diameter
+    description: 'The effective diameter of the stirrer. Typically expressed as the
+
+      distance across the rotating blade or mixing head from one tip to
+
+      the opposite tip.'
+    from_schema: https://w3id.org/nfdi4cat/coremeta4cat/reaction/
+    mappings:
+    - voc4cat:0008115
+    is_a: stirrer_diameter
+    domain: Autoclave
+    slot_uri: voc4cat:0008115
+    alias: stirrer_diameter
+    owner: Autoclave
+    domain_of:
+    - Autoclave
+    is_usage_slot: true
+    usage_slot_name: stirrer_diameter
+    range: LengthQuantity
+    recommended: true
     multivalued: true
     inlined: true
     inlined_as_list: true
@@ -13439,13 +13636,17 @@ classes:
     name: CatalysisDataset
     definition_uri: https://w3id.org/nfdi4cat/coremeta4cat/CatalysisDataset
     description: "A dcat:Dataset that contains research data in the field of catalysis.\n\
-      \nThe catalysis research field is expressed via rdf_type using a voc4cat\nterm\
+      \nThe catalysis research field is expressed via rdf_type using voc4cat\nterms\
       \ from CatalysisResearchFieldEnum (following DCAT-AP-PLUS Pattern 3).\nFor example,\
       \ a dataset from heterogeneous catalysis research would carry:\n  rdf_type:\n\
-      \    id: voc4cat:0007001\n    title: \"heterogeneous catalysis\"\n\nThe four\
-      \ CoreMeta4Cat minimum information pillars are linked via the slots\nbelow,\
-      \ each pointing to the corresponding DataGeneratingActivity or\nEvaluatedActivity\
-      \ subclass defined in the CoreMeta4Cat subprofile modules."
+      \    - id: voc4cat:0007001\n      title: \"heterogeneous catalysis\"\nInterdisciplinary\
+      \ work lists every field that applies, e.g. biocatalysis\nand electrocatalysis\
+      \ for bioelectrocatalysis.\n\nThe four CoreMeta4Cat minimum information pillars\
+      \ are linked via the slots\nbelow, each pointing to the corresponding DataGeneratingActivity\
+      \ or\nEvaluatedActivity subclass defined in the CoreMeta4Cat subprofile modules.\n\
+      Synthesis, Characterization and Simulation are each described in their\nown\
+      \ slot (was_generated_by_synthesis, was_generated_by_characterization,\nwas_generated_by_simulation);\
+      \ was_generated_by lists the ids of all of\nthem."
     from_schema: https://w3id.org/nfdi4cat/coremeta4cat
     exact_mappings:
     - dcat:Dataset
@@ -13489,6 +13690,9 @@ classes:
     - Dataset_version
     - Dataset_version_notes
     - id
+    - was_generated_by_synthesis
+    - was_generated_by_characterization
+    - was_generated_by_simulation
     - CatalysisDataset_rdf_type
     - CatalysisDataset_was_generated_by
     - CatalysisDataset_is_about_activity
@@ -13496,27 +13700,42 @@ classes:
     slot_usage:
       rdf_type:
         name: rdf_type
-        description: 'The catalysis research field, provided as a voc4cat term from
+        description: 'The catalysis research field(s), provided as voc4cat terms from
 
           CatalysisResearchFieldEnum. This is the primary machine-actionable
 
-          classification of the dataset''s domain.'
+          classification of the dataset''s domain (Layer 1) and is mandatory.
+
+          Several fields can be given for interdisciplinary work, e.g.
+
+          biocatalysis and electrocatalysis for bioelectrocatalysis.'
         bindings:
         - range: CatalysisResearchFieldEnum
-          obligation_level: RECOMMENDED
+          obligation_level: REQUIRED
           binds_value_of: id
-          description: Classify the dataset by catalysis research field using voc4cat.
-        recommended: true
-      was_generated_by:
-        name: was_generated_by
-        description: 'The DataGeneratingActivity (Synthesis, Characterization, or
-          Simulation)
-
-          that produced this dataset.'
-        range: CatalysisDataGeneratingActivity
-        recommended: true
+          description: Classify the dataset by catalysis research field(s) using voc4cat.
+        required: true
         multivalued: true
         inlined_as_list: true
+      was_generated_by:
+        name: was_generated_by
+        description: 'The ids of all activities that produced this dataset''s data,
+          e.g.
+
+          [coremeta4cat:SYN_1, coremeta4cat:CHAR_1]. Describe each activity in
+
+          full in was_generated_by_synthesis, was_generated_by_characterization
+
+          or was_generated_by_simulation, under the same id. DCAT-AP-PLUS
+
+          requires this slot on every Dataset; in RDF both lists become the
+
+          same prov:wasGeneratedBy links.'
+        range: DataGeneratingActivity
+        required: true
+        multivalued: true
+        inlined: false
+        inlined_as_list: false
       is_about_activity:
         name: is_about_activity
         description: 'The catalytic Reaction that this dataset is about (e.g. a dataset
@@ -13554,7 +13773,14 @@ classes:
 
       repeated on each of PreparationMethod, CharacterizationTechnique,
 
-      SimulationMethod, and ProductIdentificationMethod individually.'
+      SimulationMethod, and ProductIdentificationMethod individually.
+
+
+      It also adds a type designator (plan_designator) so that a plan can
+
+      declare which concrete subclass it is (e.g. CoPrecipitation, TPR, DFT)
+
+      and use that subclass''s fields.'
     from_schema: https://w3id.org/nfdi4cat/coremeta4cat/common/
     is_a: Plan
     abstract: true
@@ -13564,66 +13790,8 @@ classes:
     - ClassifierMixin_type
     - rdf_type
     - id
+    - plan_designator
     class_uri: coremeta4cat:CatalysisPlan
-  CatalysisDataGeneratingActivity:
-    name: CatalysisDataGeneratingActivity
-    definition_uri: https://w3id.org/nfdi4cat/coremeta4cat/CatalysisDataGeneratingActivity
-    description: 'A CoreMeta4Cat specialization of DCAT-AP-PLUS''s DataGeneratingActivity
-
-      that adds a type designator (activity_designator). Synthesis,
-
-      Characterization, and Simulation all specialize this class instead of
-
-      DataGeneratingActivity directly, so that when one of them is nested
-
-      inside CatalysisDataset.was_generated_by, the LinkML Python loader can
-
-      tell which concrete subclass a given entry is meant to be and keep its
-
-      subclass-specific fields (e.g. Characterization.realized_plan) rather
-
-      than falling back to DataGeneratingActivity''s own generic slot
-
-      definitions.
-
-
-      activity_designator is filled in automatically by LinkML when a class
-
-      is instantiated directly (e.g. loading a standalone Synthesis-NNN.yaml
-
-      file) -- it does not need to be set by hand there. It only needs to be
-
-      set explicitly in the source data when a Synthesis/Characterization/
-
-      Simulation instance is nested inside another object''s was_generated_by
-
-      list (e.g. in a combined CatalysisDataset file), so the loader knows
-
-      which of the three to construct.'
-    from_schema: https://w3id.org/nfdi4cat/coremeta4cat/common/
-    is_a: DataGeneratingActivity
-    abstract: true
-    slots:
-    - id
-    - Activity_title
-    - Activity_description
-    - Activity_other_identifier
-    - Activity_has_part
-    - Activity_had_input_entity
-    - Activity_had_output_entity
-    - Activity_had_input_activity
-    - Activity_carried_out_by
-    - Activity_has_qualitative_attribute
-    - Activity_has_quantitative_attribute
-    - Activity_part_of
-    - ClassifierMixin_type
-    - rdf_type
-    - evaluated_entity
-    - evaluated_activity
-    - realized_plan
-    - occurred_in
-    - activity_designator
-    class_uri: coremeta4cat:CatalysisDataGeneratingActivity
   QuantitativeRange:
     name: QuantitativeRange
     definition_uri: https://w3id.org/nfdi4cat/coremeta4cat/QuantitativeRange
@@ -14126,8 +14294,12 @@ classes:
       Pattern 3.'
     from_schema: https://w3id.org/nfdi4cat/coremeta4cat/synthesis/
     exact_mappings:
-    - OBI:0000070
-    is_a: CatalysisDataGeneratingActivity
+    - PROCO:0000001
+    close_mappings:
+    - NCIT:C61408
+    broad_mappings:
+    - COB:0000110
+    is_a: DataGeneratingActivity
     slots:
     - id
     - Activity_title
@@ -14143,7 +14315,6 @@ classes:
     - evaluated_entity
     - evaluated_activity
     - occurred_in
-    - activity_designator
     - Synthesis_nominal_composition
     - Synthesis_catalyst_measured_properties
     - Synthesis_storage_conditions
@@ -14193,7 +14364,7 @@ classes:
         range: Device
         multivalued: true
         inlined_as_list: true
-    class_uri: OBI:0000070
+    class_uri: PROCO:0000001
   Precursor:
     name: Precursor
     definition_uri: https://w3id.org/nfdi4cat/coremeta4cat/Precursor
@@ -14228,7 +14399,7 @@ classes:
     slot_usage:
       precursor_quantity:
         name: precursor_quantity
-        required: true
+        recommended: true
     class_uri: voc4cat:0007794
   CatalystSample:
     name: CatalystSample
@@ -14289,6 +14460,7 @@ classes:
     - ClassifierMixin_type
     - rdf_type
     - id
+    - plan_designator
     class_uri: voc4cat:0007016
   Impregnation:
     name: Impregnation
@@ -14309,6 +14481,7 @@ classes:
     - ClassifierMixin_type
     - rdf_type
     - id
+    - plan_designator
     - impregnation_type
     - impregnation_duration
     - impregnation_temperature
@@ -14343,6 +14516,7 @@ classes:
     - ClassifierMixin_type
     - rdf_type
     - id
+    - plan_designator
     - precipitating_agent
     - precipitating_concentration
     - has_ph_value
@@ -14383,6 +14557,7 @@ classes:
     - ClassifierMixin_type
     - rdf_type
     - id
+    - plan_designator
     - hydrolysis_ratio
     - has_aging_duration
     - drying
@@ -14411,6 +14586,7 @@ classes:
     - ClassifierMixin_type
     - rdf_type
     - id
+    - plan_designator
     - filling_volume
     - stirrer_type
     - cooling_rate
@@ -14437,6 +14613,7 @@ classes:
     - ClassifierMixin_type
     - rdf_type
     - id
+    - plan_designator
     - plasma_type
     - power_input
     - exposure_time
@@ -14464,6 +14641,7 @@ classes:
     - ClassifierMixin_type
     - rdf_type
     - id
+    - plan_designator
     - fuel
     - oxidizer
     - fuel_to_oxidizer_ratio
@@ -14492,6 +14670,7 @@ classes:
     - ClassifierMixin_type
     - rdf_type
     - id
+    - plan_designator
     - substrate
     - pulse_time
     - purging_duration
@@ -14519,6 +14698,7 @@ classes:
     - ClassifierMixin_type
     - rdf_type
     - id
+    - plan_designator
     - deposition_temperature
     - deposition_time
     - precipitating_agent
@@ -14561,6 +14741,7 @@ classes:
     - ClassifierMixin_type
     - rdf_type
     - id
+    - plan_designator
     - power
     - microwave_frequency
     - synthesis_temperature
@@ -14587,6 +14768,7 @@ classes:
     - ClassifierMixin_type
     - rdf_type
     - id
+    - plan_designator
     - sonication_power
     - sonication_duration
     - has_temperature
@@ -14617,6 +14799,7 @@ classes:
     - ClassifierMixin_type
     - rdf_type
     - id
+    - plan_designator
     - flame_type
     - has_flow_rate
     - inlet_system
@@ -14645,6 +14828,7 @@ classes:
     - ClassifierMixin_type
     - rdf_type
     - id
+    - plan_designator
     - vessel_volume
     - size_and_material
     - milling_speed
@@ -14675,6 +14859,7 @@ classes:
     - ClassifierMixin_type
     - rdf_type
     - id
+    - plan_designator
     - synthesis_pressure
     - synthesis_temperature
     - synthesis_duration
@@ -14699,6 +14884,7 @@ classes:
     - ClassifierMixin_type
     - rdf_type
     - id
+    - plan_designator
     - reaction_vessel
     - mixing_device
     - has_stirring_duration
@@ -14737,6 +14923,7 @@ classes:
     - ClassifierMixin_type
     - rdf_type
     - id
+    - plan_designator
     - has_calcination_temperature_range
     - has_calcination_dwelling_time
     - number_of_cycles
@@ -14876,7 +15063,7 @@ classes:
     from_schema: https://w3id.org/nfdi4cat/coremeta4cat/characterization/
     exact_mappings:
     - OBI:0000070
-    is_a: CatalysisDataGeneratingActivity
+    is_a: DataGeneratingActivity
     slots:
     - id
     - Activity_title
@@ -14892,7 +15079,6 @@ classes:
     - ClassifierMixin_type
     - evaluated_activity
     - occurred_in
-    - activity_designator
     - sample_state
     - sample_description
     - sample_preparation
@@ -14952,6 +15138,7 @@ classes:
     - ClassifierMixin_type
     - rdf_type
     - id
+    - plan_designator
     class_uri: OBI:0000272
   PowderXRD:
     name: PowderXRD
@@ -14961,6 +15148,7 @@ classes:
     from_schema: https://w3id.org/nfdi4cat/coremeta4cat/characterization/
     exact_mappings:
     - CHMO:0000158
+    - panet:PaNET01101
     is_a: CharacterizationTechnique
     mixins:
     - XRaySourceMixin
@@ -14970,6 +15158,7 @@ classes:
     - ClassifierMixin_type
     - rdf_type
     - id
+    - plan_designator
     - has_two_theta_range
     - step_size
     - has_operation_mode
@@ -14987,6 +15176,7 @@ classes:
     from_schema: https://w3id.org/nfdi4cat/coremeta4cat/characterization/
     exact_mappings:
     - CHMO:0000852
+    - panet:PaNET01102
     is_a: CharacterizationTechnique
     mixins:
     - XRaySourceMixin
@@ -14996,6 +15186,7 @@ classes:
     - ClassifierMixin_type
     - rdf_type
     - id
+    - plan_designator
     - has_temperature
     - xray_source
     - monochromator
@@ -15008,6 +15199,7 @@ classes:
     from_schema: https://w3id.org/nfdi4cat/coremeta4cat/characterization/
     exact_mappings:
     - voc4cat:0000286
+    - panet:PaNET01196
     is_a: CharacterizationTechnique
     mixins:
     - XRaySourceMixin
@@ -15018,6 +15210,7 @@ classes:
     - ClassifierMixin_type
     - rdf_type
     - id
+    - plan_designator
     - has_operation_mode
     - element_analyzed
     - absorption_edge
@@ -15038,6 +15231,7 @@ classes:
     from_schema: https://w3id.org/nfdi4cat/coremeta4cat/characterization/
     exact_mappings:
     - CHMO:0000404
+    - panet:PaNET01204
     is_a: CharacterizationTechnique
     mixins:
     - XRaySourceMixin
@@ -15048,6 +15242,7 @@ classes:
     - ClassifierMixin_type
     - rdf_type
     - id
+    - plan_designator
     - total_acquisition_time
     - number_of_scans
     - step_size
@@ -15074,6 +15269,7 @@ classes:
     - ClassifierMixin_type
     - rdf_type
     - id
+    - plan_designator
     - primary_energy
     - counting_time
     - resolution
@@ -15087,6 +15283,7 @@ classes:
     from_schema: https://w3id.org/nfdi4cat/coremeta4cat/characterization/
     exact_mappings:
     - CHMO:0000630
+    - panet:PaNET01109
     is_a: CharacterizationTechnique
     slots:
     - title
@@ -15094,6 +15291,7 @@ classes:
     - ClassifierMixin_type
     - rdf_type
     - id
+    - plan_designator
     - has_operation_mode
     - has_wavenumber_range
     - step_size
@@ -15112,6 +15310,8 @@ classes:
     from_schema: https://w3id.org/nfdi4cat/coremeta4cat/characterization/
     exact_mappings:
     - CHMO:0000645
+    broad_mappings:
+    - panet:PaNET01109
     is_a: CharacterizationTechnique
     slots:
     - title
@@ -15119,6 +15319,7 @@ classes:
     - ClassifierMixin_type
     - rdf_type
     - id
+    - plan_designator
     - adsorption_gas
     - has_atmosphere
     - has_flow_rate
@@ -15138,6 +15339,7 @@ classes:
     from_schema: https://w3id.org/nfdi4cat/coremeta4cat/characterization/
     exact_mappings:
     - voc4cat:0000069
+    - panet:PaNET01195
     is_a: CharacterizationTechnique
     slots:
     - title
@@ -15145,6 +15347,7 @@ classes:
     - ClassifierMixin_type
     - rdf_type
     - id
+    - plan_designator
     - excitation_laser_wavelength
     - excitation_laser_power
     - magnification_setting
@@ -15174,6 +15377,7 @@ classes:
     - ClassifierMixin_type
     - rdf_type
     - id
+    - plan_designator
     - acquisition_nucleus
     - solvent
     - irradiation_frequency
@@ -15190,6 +15394,8 @@ classes:
     from_schema: https://w3id.org/nfdi4cat/coremeta4cat/characterization/
     exact_mappings:
     - voc4cat:0000078
+    broad_mappings:
+    - panet:PaNET01145
     is_a: CharacterizationTechnique
     mixins:
     - ElectronMicroscopyMixin
@@ -15199,6 +15405,7 @@ classes:
     - ClassifierMixin_type
     - rdf_type
     - id
+    - plan_designator
     - has_operation_mode
     - gun_type
     - acceleration_voltage
@@ -15211,6 +15418,8 @@ classes:
     from_schema: https://w3id.org/nfdi4cat/coremeta4cat/characterization/
     exact_mappings:
     - voc4cat:0000075
+    broad_mappings:
+    - panet:PaNET01145
     is_a: CharacterizationTechnique
     mixins:
     - ElectronMicroscopyMixin
@@ -15220,6 +15429,7 @@ classes:
     - ClassifierMixin_type
     - rdf_type
     - id
+    - plan_designator
     - image_resolution
     - field_emitter
     - gun_type
@@ -15243,6 +15453,7 @@ classes:
     - ClassifierMixin_type
     - rdf_type
     - id
+    - plan_designator
     - has_operation_mode
     - has_atmosphere
     - initial_temperature
@@ -15269,6 +15480,7 @@ classes:
     - ClassifierMixin_type
     - rdf_type
     - id
+    - plan_designator
     - reducing_gas_composition
     - has_temperature_range
     - has_heating_rate
@@ -15291,6 +15503,7 @@ classes:
     - ClassifierMixin_type
     - rdf_type
     - id
+    - plan_designator
     - oxidizing_gas_composition
     - has_temperature_range
     - has_heating_rate
@@ -15311,6 +15524,7 @@ classes:
     - ClassifierMixin_type
     - rdf_type
     - id
+    - plan_designator
     - adsorbate_gas
     - degassing_temperature
     - measurement_temperature
@@ -15332,6 +15546,7 @@ classes:
     - ClassifierMixin_type
     - rdf_type
     - id
+    - plan_designator
     - element_analyzed
     - calibration_method
     - detection_limit
@@ -15352,6 +15567,7 @@ classes:
     - ClassifierMixin_type
     - rdf_type
     - id
+    - plan_designator
     - elements_analyzed
     - combustion_temperature
     - carrier_gas
@@ -15371,6 +15587,7 @@ classes:
     - ClassifierMixin_type
     - rdf_type
     - id
+    - plan_designator
     - wavelength_range
     - path_length
     - solvent
@@ -15392,6 +15609,7 @@ classes:
     - ClassifierMixin_type
     - rdf_type
     - id
+    - plan_designator
     - emission_range
     - slit_width
     - step_size
@@ -15418,6 +15636,7 @@ classes:
     - ClassifierMixin_type
     - rdf_type
     - id
+    - plan_designator
     - lifetime_fitting_model
     - number_of_shots
     - excitation_wavelength
@@ -15442,6 +15661,7 @@ classes:
     - ClassifierMixin_type
     - rdf_type
     - id
+    - plan_designator
     - scan_rate
     - scan_potential_range
     - step_size_potential
@@ -15471,6 +15691,7 @@ classes:
     - ClassifierMixin_type
     - rdf_type
     - id
+    - plan_designator
     - electrode_configuration
     - ac_frequency
     - ac_dc_mode
@@ -15498,6 +15719,7 @@ classes:
     - ClassifierMixin_type
     - rdf_type
     - id
+    - plan_designator
     - solvent
     - has_concentration
     - light_wavelength
@@ -15524,6 +15746,7 @@ classes:
     - ClassifierMixin_type
     - rdf_type
     - id
+    - plan_designator
     - has_operation_mode
     - spray_voltage
     - capillary_temperature
@@ -15551,6 +15774,7 @@ classes:
     - ClassifierMixin_type
     - rdf_type
     - id
+    - plan_designator
     - carrier_gas
     - carrier_gas_purity
     - inlet_temperature
@@ -15585,6 +15809,7 @@ classes:
     - ClassifierMixin_type
     - rdf_type
     - id
+    - plan_designator
     - has_temperature
     - calibration_standard
     - column_type
@@ -15611,6 +15836,7 @@ classes:
     - ClassifierMixin_type
     - rdf_type
     - id
+    - plan_designator
     - gradient_program
     - ionization_mode
     - has_temperature
@@ -15632,16 +15858,18 @@ classes:
       \ it is the catalytic process\nbeing observed, not the process that generates\
       \ the dataset. A CatalysisDataset\nis linked to the Reaction it is about via\
       \ is_about_activity.\n\nFor operando experiments (e.g. in-situ XRD during a\
-      \ reaction), the dataset\ncarries both:\n  was_generated_by: Characterization\
-      \  (the measurement producing data)\n  is_about_activity: Reaction         (the\
-      \ catalytic process being monitored)\n\nThe reactor is linked via the inherited\
-      \ used_reactor slot (is_a:\ncarried_out_by), narrowed here to require a ChemicalReactor\
-      \ instance\nrather than touching the generic carried_out_by relation directly.\n\
-      Reactants are linked via the inherited used_reactant slot (range:\nReagent)\
-      \ -- CatalyticReaction does not declare its own reactant slot.\nThe type of\
-      \ catalytic reaction (e.g. ammonia synthesis, CO oxidation)\nis expressed via\
-      \ rdf_type using a voc4cat or ChemO term."
+      \ reaction), the dataset\ncarries both:\n  was_generated_by_characterization:\
+      \ Characterization  (the measurement producing data)\n  is_about_activity: CatalyticReaction\
+      \  (the catalytic process being monitored)\n\nThe reactor is linked via the\
+      \ inherited used_reactor slot (is_a:\ncarried_out_by), narrowed here to require\
+      \ a ChemicalReactor instance\nrather than touching the generic carried_out_by\
+      \ relation directly.\nReactants are linked via the inherited used_reactant slot\
+      \ (range:\nReagent) -- CatalyticReaction does not declare its own reactant slot.\n\
+      The type of catalytic reaction (e.g. ammonia synthesis, CO oxidation)\nis expressed\
+      \ via rdf_type using a voc4cat or ChemO term."
     from_schema: https://w3id.org/nfdi4cat/coremeta4cat/reaction/
+    exact_mappings:
+    - REX:0000051
     is_a: ChemicalReaction
     slots:
     - id
@@ -15667,7 +15895,7 @@ classes:
     - ChemicalReaction_has_pressure
     - has_yield
     - ChemicalReaction_related_resource
-    - catalyst_quantity
+    - catalyst_mass
     - catalyst_type
     - catalyst_form
     - reaction_name
@@ -15683,9 +15911,15 @@ classes:
     slot_usage:
       rdf_type:
         name: rdf_type
-        description: 'The type of catalytic reaction as an ontology term (e.g. voc4cat:0007010
+        description: 'The type of catalytic reaction as an ontology term, e.g. voc4cat:0000259
 
-          for a specific reaction type, or a ChemO/RXNO term).
+          (CO2 hydrogenation), or a term from RXNO, CHMO or SIO. Mandatory for
+
+          every reaction (Layer 1). If no specific term exists, use the closest
+
+          broader one (e.g. voc4cat:0000260, hydrogenation, for CO methanation)
+
+          and keep the specific name in reaction_name.
 
 
           This is the sole reaction-type classification mechanism (DCAT-AP-PLUS
@@ -15694,14 +15928,10 @@ classes:
 
           slot + ReactionType class hierarchy (cf. PR #118, since superseded here).
 
-          Kept `recommended` rather than `required` for the same reason as
+          See nfdi4cat/CoreMeta4Cat#117 for the cardinality discussion and
 
-          catalyst_type below: see nfdi4cat/CoreMeta4Cat#117 for the cardinality
-
-          discussion and nfdi4cat/CoreMeta4Cat#116 for the classification-mechanism
-
-          discussion.'
-        recommended: true
+          nfdi4cat/CoreMeta4Cat#116 for the classification-mechanism discussion.'
+        required: true
       used_reactor:
         name: used_reactor
         description: 'The reactor in which the Reaction takes place.
@@ -15722,7 +15952,7 @@ classes:
 
           The abstract stub ProductIdentificationMethod is retained for backward compatibility.'
         range: ProductIdentificationMethod
-        required: true
+        recommended: true
         multivalued: true
         inlined_as_list: true
       has_reaction_step:
@@ -15735,7 +15965,7 @@ classes:
 
           product_identification_method, ...) when loaded.'
         range: CatalyticReaction
-    class_uri: coremeta4cat:CatalyticReaction
+    class_uri: REX:0000051
   ProductIdentificationMethod:
     name: ProductIdentificationMethod
     definition_uri: https://w3id.org/nfdi4cat/coremeta4cat/ProductIdentificationMethod
@@ -15768,6 +15998,7 @@ classes:
     - ClassifierMixin_type
     - rdf_type
     - id
+    - plan_designator
     class_uri: OBI:0000272
   ChemicalReactor:
     name: ChemicalReactor
@@ -15779,8 +16010,9 @@ classes:
       instruments (Device) from reaction vessels (Reactor). ChemicalReactor\nfurther\
       \ specializes chemdcat-ap's generic Reactor for catalysis use cases.\n\nConcrete\
       \ subclasses (FixedBedReactor, CSTR, PlugFlowReactor, \u2026) specify\nreactor\
-      \ geometry and operating mode.\nLinked from Reaction via used_reactor (restricted\
-      \ to range: ChemicalReactor)."
+      \ geometry and operating mode.\nA reactor that uses fields of its subclass declares\
+      \ the subclass with\nreactor_designator (its class_uri, e.g. coremeta4cat:FixedBedReactor).\n\
+      Linked from Reaction via used_reactor (restricted to range: ChemicalReactor)."
     from_schema: https://w3id.org/nfdi4cat/coremeta4cat/reaction/
     exact_mappings:
     - voc4cat:0007018
@@ -15804,6 +16036,7 @@ classes:
     - has_volume
     - has_density
     - has_pressure
+    - reactor_designator
     class_uri: voc4cat:0007018
   ElectrochemicalReactor:
     name: ElectrochemicalReactor
@@ -15833,6 +16066,7 @@ classes:
     - has_volume
     - has_density
     - has_pressure
+    - reactor_designator
     - has_cathode
     - has_anode
     - cell_operating_mode
@@ -15866,6 +16100,7 @@ classes:
     - has_volume
     - has_density
     - has_pressure
+    - reactor_designator
     - stirring_rate
     - residence_time
     - reactor_working_volume
@@ -15900,6 +16135,7 @@ classes:
     - has_volume
     - has_density
     - has_pressure
+    - reactor_designator
     - tube_length
     - tube_internal_diameter
     - flow_direction
@@ -15934,11 +16170,19 @@ classes:
     - has_volume
     - has_density
     - has_pressure
-    - agitation_type
+    - reactor_designator
+    - reactor_stirrer_type
+    - stirring_rate
+    - Autoclave_stirrer_diameter
+    - reactor_working_volume
+    - reaction_chamber_shape
     - reaction_chamber_material
-    - vessel_internal_volume
     - vessel_material
     - batch_duration
+    slot_usage:
+      stirrer_diameter:
+        name: stirrer_diameter
+        recommended: true
     class_uri: NCIT:C93052
   SlurryReactor:
     name: SlurryReactor
@@ -15967,6 +16211,7 @@ classes:
     - has_volume
     - has_density
     - has_pressure
+    - reactor_designator
     - catalyst_particle_size
     - gas_liquid_ratio
     - agitation_sparging_rate
@@ -16001,6 +16246,7 @@ classes:
     - has_volume
     - has_density
     - has_pressure
+    - reactor_designator
     - channel_material
     - channel_dimensions
     - number_of_channels
@@ -16032,6 +16278,7 @@ classes:
     - has_volume
     - has_density
     - has_pressure
+    - reactor_designator
     - catalyst_particle_size
     - catalyst_bed_diameter
     - catalyst_bed_volume
@@ -16065,6 +16312,7 @@ classes:
     - has_volume
     - has_density
     - has_pressure
+    - reactor_designator
     - gas_distributor_type
     - bed_expansion_height
     - bubble_size_distribution
@@ -16125,8 +16373,10 @@ classes:
       NCIT:C18097 for molecular dynamics), following DCAT-AP-PLUS Pattern 3.'
     from_schema: https://w3id.org/nfdi4cat/coremeta4cat/simulation/
     exact_mappings:
-    - NCIT:C48936
-    is_a: CatalysisDataGeneratingActivity
+    - PROCO:0000159
+    close_mappings:
+    - NCIT:C16461
+    is_a: DataGeneratingActivity
     slots:
     - id
     - Activity_title
@@ -16142,7 +16392,6 @@ classes:
     - ClassifierMixin_type
     - evaluated_activity
     - occurred_in
-    - activity_designator
     - software_package
     - calculated_property
     - Simulation_rdf_type
@@ -16178,7 +16427,7 @@ classes:
         recommended: true
         multivalued: true
         inlined_as_list: true
-    class_uri: NCIT:C48936
+    class_uri: PROCO:0000159
   SimulationMethod:
     name: SimulationMethod
     definition_uri: https://w3id.org/nfdi4cat/coremeta4cat/SimulationMethod
@@ -16199,6 +16448,7 @@ classes:
     - ClassifierMixin_type
     - rdf_type
     - id
+    - plan_designator
     class_uri: OBI:0000272
   DFT:
     name: DFT
@@ -16216,6 +16466,7 @@ classes:
     - ClassifierMixin_type
     - rdf_type
     - id
+    - plan_designator
     - exchange_correlation_functional
     - energy_cutoff
     - convergence_criteria
@@ -16239,6 +16490,7 @@ classes:
     - ClassifierMixin_type
     - rdf_type
     - id
+    - plan_designator
     - force_field
     - simulation_timestep
     - simulation_time
@@ -16261,6 +16513,7 @@ classes:
     - ClassifierMixin_type
     - rdf_type
     - id
+    - plan_designator
     - rate_constants
     - solver_type
     - has_temperature
@@ -16285,6 +16538,7 @@ classes:
     - ClassifierMixin_type
     - rdf_type
     - id
+    - plan_designator
     - interaction_potential
     - number_of_steps
     - has_temperature
@@ -16303,7 +16557,11 @@ classes:
 
       values and the computational settings used to produce them.
 
-      Linked from Simulation via the calculated_property slot.'
+      Linked from Simulation via the calculated_property slot. An entry
+
+      declares its concrete subclass with property_designator, e.g.
+
+      coremeta4cat:AdsorptionEnergetics.'
     from_schema: https://w3id.org/nfdi4cat/coremeta4cat/simulation/
     exact_mappings:
     - IAO:0000109
@@ -16315,6 +16573,7 @@ classes:
     - QualitativeAttribute_value
     - ClassifierMixin_type
     - rdf_type
+    - property_designator
     class_uri: IAO:0000109
   ThermodynamicStability:
     name: ThermodynamicStability
@@ -16335,6 +16594,7 @@ classes:
     - QualitativeAttribute_value
     - ClassifierMixin_type
     - rdf_type
+    - property_designator
     - formation_energy
     - reference_energies
     - energy_above_hull
@@ -16358,6 +16618,7 @@ classes:
     - QualitativeAttribute_value
     - ClassifierMixin_type
     - rdf_type
+    - property_designator
     - piezoelectric_tensor
     - crystal_symmetry
     - strain_applied
@@ -16380,6 +16641,7 @@ classes:
     - QualitativeAttribute_value
     - ClassifierMixin_type
     - rdf_type
+    - property_designator
     - elastic_tensor
     - bulk_modulus
     - shear_modulus
@@ -16404,6 +16666,7 @@ classes:
     - QualitativeAttribute_value
     - ClassifierMixin_type
     - rdf_type
+    - property_designator
     - surface_energy
     - miller_indices
     - slab_thickness
@@ -16430,6 +16693,7 @@ classes:
     - QualitativeAttribute_value
     - ClassifierMixin_type
     - rdf_type
+    - property_designator
     - dielectric_tensor
     - born_effective_charges
     - material_composition
@@ -16458,6 +16722,7 @@ classes:
     - QualitativeAttribute_value
     - ClassifierMixin_type
     - rdf_type
+    - property_designator
     - force_constant_method
     - kq_point_mesh
     - smearing_parameter
@@ -16487,6 +16752,7 @@ classes:
     - QualitativeAttribute_value
     - ClassifierMixin_type
     - rdf_type
+    - property_designator
     - fit_method
     - bulk_modulus
     - pressure_derivative
@@ -16518,6 +16784,7 @@ classes:
     - QualitativeAttribute_value
     - ClassifierMixin_type
     - rdf_type
+    - property_designator
     - ph_range
     - potential_range
     - solvation_model
@@ -16546,6 +16813,7 @@ classes:
     - QualitativeAttribute_value
     - ClassifierMixin_type
     - rdf_type
+    - property_designator
     - grain_boundary_plane
     - misorientation_angle
     - grain_boundary_energy
@@ -16578,6 +16846,7 @@ classes:
     - QualitativeAttribute_value
     - ClassifierMixin_type
     - rdf_type
+    - property_designator
     - smearing_method
     - spin_polarized
     - band_path
@@ -16608,6 +16877,7 @@ classes:
     - QualitativeAttribute_value
     - ClassifierMixin_type
     - rdf_type
+    - property_designator
     - polarization_direction
     - spontaneous_polarization
     - reference_structure
@@ -16638,6 +16908,7 @@ classes:
     - QualitativeAttribute_value
     - ClassifierMixin_type
     - rdf_type
+    - property_designator
     - material_sample
     - structure_model
     - smearing_broadening
@@ -16667,6 +16938,7 @@ classes:
     - QualitativeAttribute_value
     - ClassifierMixin_type
     - rdf_type
+    - property_designator
     - adsorbate
     - adsorption_site
     - adsorption_energy
@@ -16692,6 +16964,7 @@ classes:
     - QualitativeAttribute_value
     - ClassifierMixin_type
     - rdf_type
+    - property_designator
     - elementary_step
     - initial_state
     - final_state
@@ -16717,6 +16990,7 @@ classes:
     - QualitativeAttribute_value
     - ClassifierMixin_type
     - rdf_type
+    - property_designator
     - elementary_step
     - forward_activation_energy
     - reverse_activation_energy
@@ -16744,6 +17018,7 @@ classes:
     - QualitativeAttribute_value
     - ClassifierMixin_type
     - rdf_type
+    - property_designator
     - electrode_potential_model
     - potential_reference_scale
     - applied_potential
@@ -16768,6 +17043,7 @@ classes:
     - QualitativeAttribute_value
     - ClassifierMixin_type
     - rdf_type
+    - property_designator
     - descriptor_type
     - descriptor_value
     - d_band_center
@@ -20227,6 +20503,6 @@ classes:
     class_uri: qudt:Quantity
 metamodel_version: 1.12.0
 source_file: coremeta4cat.yaml
-source_file_date: '2026-11-23T13:13:43'
-source_file_size: 14821
+source_file_date: '2026-11-26T09:25:51'
+source_file_size: 18958
 
